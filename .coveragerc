@@ -1,0 +1,78 @@
+[run]
+# 覆盖率运行配置
+source = .
+branch = True
+
+# 包含的文件模式
+include = 
+    dev_server.py
+    server.py
+    dev_client.js
+    start_dev.py
+    test_dev_env.py
+    core/*
+    src/*
+    python_layer/*
+    file_management/web_interface/app.js
+
+# 排除的文件模式
+omit =
+    tests/*
+    test_*.py
+    *_test.py
+    venv/*
+    env/*
+    trader_venv/*
+    __pycache__/*
+    .git/*
+    node_modules/*
+    logs/*
+    *.log
+    setup.py
+    conftest.py
+    panda_factor-main/*
+    coinglass_副本/*
+    
+[report]
+# 报告配置
+exclude_lines =
+    # 标准排除行
+    pragma: no cover
+    def __repr__
+    if self.debug:
+    if settings.DEBUG
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
+    class .*\(Protocol\):
+    @(abc\.)?abstractmethod
+    
+    # 自定义排除模式
+    # 跳过异常处理
+    except.*:
+    # 跳过日志语句
+    logger\..*
+    # 跳过调试代码
+    if.*debug.*:
+
+# 显示缺失的行号
+show_missing = True
+
+# 精确度
+precision = 2
+
+# 跳过被覆盖的文件
+skip_covered = False
+
+# 按字母顺序排序
+sort = Name
+
+[html]
+# HTML报告配置
+directory = tests/htmlcov
+title = AI量化交易系统 - 测试覆盖率报告
+
+[xml]
+# XML报告配置
+output = tests/coverage.xml

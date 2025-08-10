@@ -1,0 +1,656 @@
+/* ================================= 
+   动画效果样式
+   提升用户体验的流畅动画
+   ================================= */
+
+/* 通用动画基础 */
+.animate {
+    transition: var(--transition-all);
+}
+
+.animate-fast {
+    transition: var(--transition-fast);
+}
+
+.animate-medium {
+    transition: var(--transition-medium);
+}
+
+.animate-slow {
+    transition: var(--transition-slow);
+}
+
+.animate-spring {
+    transition: var(--transition-spring);
+}
+
+/* ================================= 
+   进入/退出动画
+   ================================= */
+
+/* 淡入淡出 */
+.fade-enter {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms ease, transform 300ms ease;
+}
+
+.fade-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fade-exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 300ms ease, transform 300ms ease;
+}
+
+/* 滑入滑出 */
+.slide-enter-right {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.slide-enter-right-active {
+    transform: translateX(0);
+    opacity: 1;
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-enter-left {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.slide-enter-left-active {
+    transform: translateX(0);
+    opacity: 1;
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 缩放动画 */
+.scale-enter {
+    transform: scale(0.8);
+    opacity: 0;
+}
+
+.scale-enter-active {
+    transform: scale(1);
+    opacity: 1;
+    transition: transform 200ms cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                opacity 200ms ease;
+}
+
+/* ================================= 
+   悬停动画
+   ================================= */
+
+/* 按钮悬停 */
+.btn {
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-fast);
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transition: left 500ms ease;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* 卡片悬停 */
+.widget {
+    transition: all var(--transition-medium);
+}
+
+.widget:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+/* 导航按钮悬停 */
+.nav-btn {
+    position: relative;
+    transition: all var(--transition-fast);
+}
+
+.nav-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--color-info);
+    transition: all var(--transition-fast);
+    transform: translateX(-50%);
+}
+
+.nav-btn:hover::after,
+.nav-btn.active::after {
+    width: 80%;
+}
+
+.nav-btn:hover {
+    color: var(--color-info);
+    transform: translateY(-2px);
+}
+
+/* 表格行悬停 */
+.market-table tbody tr,
+.trades-table tbody tr,
+.strategy-table tbody tr,
+.factor-table tbody tr {
+    transition: all var(--transition-fast);
+}
+
+.market-table tbody tr:hover,
+.trades-table tbody tr:hover,
+.strategy-table tbody tr:hover,
+.factor-table tbody tr:hover {
+    background: var(--bg-elevated);
+    transform: translateX(4px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ================================= 
+   Loading动画
+   ================================= */
+
+/* 旋转加载器 */
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--color-info);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 脉冲加载器 */
+.loading-pulse {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-info);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-pulse:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.loading-pulse:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+@keyframes pulse {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+}
+
+/* 波浪加载器 */
+.loading-wave {
+    display: flex;
+    gap: 4px;
+}
+
+.loading-wave .bar {
+    width: 4px;
+    height: 20px;
+    background: var(--color-info);
+    animation: wave 1.2s linear infinite;
+}
+
+.loading-wave .bar:nth-child(2) { animation-delay: 0.1s; }
+.loading-wave .bar:nth-child(3) { animation-delay: 0.2s; }
+.loading-wave .bar:nth-child(4) { animation-delay: 0.3s; }
+.loading-wave .bar:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes wave {
+    0%, 40%, 100% {
+        transform: scaleY(0.4);
+        opacity: 0.5;
+    }
+    20% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+/* ================================= 
+   特殊效果动画
+   ================================= */
+
+/* 数值变化动画 */
+.value-change {
+    transition: all var(--transition-fast);
+}
+
+.value-increase {
+    animation: valueIncrease 600ms ease-out;
+}
+
+.value-decrease {
+    animation: valueDecrease 600ms ease-out;
+}
+
+@keyframes valueIncrease {
+    0% { 
+        color: var(--color-success);
+        transform: scale(1.1);
+    }
+    50% {
+        color: var(--color-success);
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes valueDecrease {
+    0% { 
+        color: var(--color-danger);
+        transform: scale(1.1);
+    }
+    50% {
+        color: var(--color-danger);
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 连接状态动画 */
+.status-indicator {
+    position: relative;
+    transition: all var(--transition-fast);
+}
+
+.status-indicator.online {
+    animation: statusOnline 2s ease-in-out infinite;
+}
+
+.status-indicator.warning {
+    animation: statusWarning 1s ease-in-out infinite;
+}
+
+.status-indicator.offline {
+    animation: statusOffline 0.5s ease-in-out alternate infinite;
+}
+
+@keyframes statusOnline {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+    }
+}
+
+@keyframes statusWarning {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+    }
+}
+
+@keyframes statusOffline {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0.3;
+    }
+}
+
+/* AI分析动画 */
+.ai-indicator {
+    position: relative;
+}
+
+.ai-indicator.active::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 50%;
+    border: 2px solid var(--color-ai);
+    animation: aiPulse 2s linear infinite;
+}
+
+@keyframes aiPulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+}
+
+/* ================================= 
+   Toast通知动画
+   ================================= */
+
+.toast-container {
+    position: fixed;
+    top: 80px;
+    right: 24px;
+    z-index: 9999;
+    max-width: 400px;
+}
+
+.toast {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    margin-bottom: var(--spacing-2);
+    transform: translateX(100%);
+    opacity: 0;
+    transition: all var(--transition-medium);
+    overflow: hidden;
+}
+
+.toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast.toast-success {
+    border-left: 4px solid var(--color-success);
+}
+
+.toast.toast-error {
+    border-left: 4px solid var(--color-danger);
+}
+
+.toast.toast-warning {
+    border-left: 4px solid var(--color-warning);
+}
+
+.toast.toast-info {
+    border-left: 4px solid var(--color-info);
+}
+
+.toast-content {
+    padding: var(--spacing-3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    transition: color var(--transition-fast);
+}
+
+.toast-close:hover {
+    color: var(--text-primary);
+}
+
+/* ================================= 
+   图表动画
+   ================================= */
+
+/* 图表容器动画 */
+.chart-container {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all var(--transition-medium);
+}
+
+.chart-container.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 图表数据更新动画 */
+.chart-updating::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-ai);
+    animation: chartProgress 1s ease-in-out;
+}
+
+@keyframes chartProgress {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* ================================= 
+   Modal动画
+   ================================= */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9998;
+    opacity: 0;
+    transition: opacity var(--transition-medium);
+}
+
+.modal-overlay.show {
+    opacity: 1;
+}
+
+.modal {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    max-width: 90vw;
+    max-height: 90vh;
+    transform: scale(0.9) translateY(20px);
+    opacity: 0;
+    transition: all var(--transition-medium);
+}
+
+.modal.show {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* ================================= 
+   自定义滚动条动画
+   ================================= */
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--border-light);
+}
+
+/* ================================= 
+   页面切换动画
+   ================================= */
+
+.page {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all var(--transition-medium);
+    pointer-events: none;
+}
+
+.page.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+/* Tab切换动画 */
+.tab-content {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all var(--transition-fast);
+    display: none;
+}
+
+.tab-content.active {
+    opacity: 1;
+    transform: translateY(0);
+    display: block;
+}
+
+/* ================================= 
+   加载遮罩动画
+   ================================= */
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity var(--transition-slow);
+}
+
+.loading-overlay:not(.active) {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ================================= 
+   响应式动画优化
+   ================================= */
+
+@media (max-width: 768px) {
+    /* 移动设备上减少动画复杂度 */
+    .btn:hover {
+        transform: none;
+    }
+    
+    .widget:hover {
+        transform: none;
+    }
+    
+    .nav-btn:hover {
+        transform: none;
+    }
+    
+    .market-table tbody tr:hover,
+    .trades-table tbody tr:hover,
+    .strategy-table tbody tr:hover,
+    .factor-table tbody tr:hover {
+        transform: none;
+    }
+}
+
+/* 减少动画模式适配 */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .loading-spinner {
+        animation: none;
+        border-top-color: var(--color-info);
+    }
+    
+    .status-indicator.online,
+    .status-indicator.warning,
+    .status-indicator.offline {
+        animation: none;
+    }
+}

@@ -1,0 +1,1 @@
+{"rustc":12610991425282158916,"features":"[]","declared_features":"[\"default\", \"web\", \"web-sys\"]","target":6559739441168827132,"profile":17051476908637595585,"path":7743707320968541540,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"release/.fingerprint/whoami-8dc4a6789fa287d8/dep-lib-whoami","checksum":false}}],"rustflags":[],"config":2069994364910194474,"compile_kind":0}

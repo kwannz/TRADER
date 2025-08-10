@@ -1,0 +1,160 @@
+{
+  "name": "AI量化交易系统开发环境",
+  "version": "1.0.0",
+  "description": "类似Replit的热重载开发环境配置",
+  
+  "server": {
+    "host": "localhost",
+    "port": 8000,
+    "dev_ws_endpoint": "/dev-ws",
+    "api_prefix": "/api",
+    "static_path": "/",
+    "auto_reload": true,
+    "disable_cache": true
+  },
+  
+  "hot_reload": {
+    "enabled": true,
+    "watch_extensions": [".py", ".html", ".css", ".js", ".json"],
+    "ignore_patterns": [
+      "*.pyc",
+      "__pycache__/*",
+      ".git/*",
+      "node_modules/*",
+      "venv/*",
+      "env/*",
+      ".DS_Store",
+      "*.log",
+      "logs/*"
+    ],
+    "watch_directories": [
+      ".",
+      "file_management",
+      "core", 
+      "src",
+      "python_layer"
+    ],
+    "reload_delay": 1.0,
+    "max_reload_attempts": 3
+  },
+  
+  "file_watching": {
+    "recursive": true,
+    "use_polling": false,
+    "polling_interval": 1.0,
+    "ignore_directories": [
+      "__pycache__",
+      ".git",
+      "node_modules", 
+      "venv",
+      "env",
+      ".pytest_cache",
+      ".mypy_cache",
+      "logs",
+      "trader_venv"
+    ]
+  },
+  
+  "frontend": {
+    "auto_refresh": true,
+    "refresh_delay": 0.5,
+    "show_notifications": true,
+    "notification_duration": 3000,
+    "dev_indicator": true,
+    "console_logging": true
+  },
+  
+  "backend": {
+    "auto_restart": true,
+    "restart_delay": 2.0,
+    "graceful_shutdown": true,
+    "preserve_state": false,
+    "restart_on_error": true
+  },
+  
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+    "show_file_changes": true,
+    "show_reload_events": true,
+    "show_websocket_events": true
+  },
+  
+  "browser": {
+    "auto_open": true,
+    "open_delay": 1.0,
+    "preferred_browser": null,
+    "open_dev_tools": false
+  },
+  
+  "api": {
+    "enable_dev_endpoints": true,
+    "enable_cors": true,
+    "cors_origins": ["*"],
+    "cors_methods": ["GET", "POST", "OPTIONS"],
+    "cors_headers": ["Content-Type", "Authorization"]
+  },
+  
+  "performance": {
+    "max_websocket_clients": 100,
+    "websocket_ping_interval": 30,
+    "file_watch_buffer_size": 1000,
+    "reload_cooldown": 1.0
+  },
+  
+  "development": {
+    "debug_mode": true,
+    "verbose_logging": false,
+    "profile_performance": false,
+    "enable_repl": false,
+    "mock_external_apis": false
+  },
+  
+  "scripts": {
+    "start": "python dev_server.py",
+    "start_enhanced": "python server.py --dev",
+    "install_deps": "pip install -r requirements-dev.txt",
+    "check_deps": "python -c \"import sys; [__import__(pkg) for pkg in ['aiohttp', 'watchdog', 'ccxt']]\"",
+    "lint": "flake8 . --max-line-length=100 --ignore=E203,W503",
+    "format": "black . --line-length=100"
+  },
+  
+  "environment": {
+    "python_path": null,
+    "virtual_env": null,
+    "path_extensions": [],
+    "environment_variables": {
+      "PYTHONUNBUFFERED": "1",
+      "PYTHONPATH": ".",
+      "DEV_MODE": "true"
+    }
+  },
+  
+  "integrations": {
+    "vscode": {
+      "enable_live_server": false,
+      "workspace_settings": {
+        "python.defaultInterpreterPath": "./venv/bin/python",
+        "python.terminal.activateEnvironment": true
+      }
+    },
+    "git": {
+      "ignore_git_changes": true,
+      "watch_git_files": false
+    }
+  },
+  
+  "experimental": {
+    "enable_code_lens": false,
+    "enable_intellisense": false,
+    "enable_breakpoints": false,
+    "enable_profiling": false
+  },
+  
+  "deployment": {
+    "build_command": null,
+    "build_output_dir": "dist",
+    "pre_build_scripts": [],
+    "post_build_scripts": []
+  }
+}

@@ -1,0 +1,86 @@
+# AI量化交易系统 - 开发环境依赖
+# 包含运行时依赖 + 开发工具依赖
+
+# ============ 运行时核心依赖 ============
+# 基于现有的 config/environment/requirements.txt
+
+# 异步Web框架
+aiohttp>=3.9.0
+aiohttp-cors>=0.7.0
+websockets>=12.0
+
+# 数据处理
+pandas>=2.1.0
+numpy>=1.25.0
+
+# 加密货币交易
+ccxt>=4.1.0
+
+# ============ 开发环境特有依赖 ============
+
+# 文件监控和热重载
+watchdog>=3.0.0
+
+# Web浏览器控制 (用于自动打开浏览器)
+webbrowser  # 标准库，无需版本约束
+
+# 开发工具增强
+# 可选：代码格式化
+# black>=23.0.0
+# isort>=5.12.0
+
+# 可选：类型检查
+# mypy>=1.0.0
+
+# 可选：代码质量检查  
+# flake8>=6.0.0
+# pylint>=2.17.0
+
+# ============ 系统兼容性 ============
+# 跨平台路径处理
+pathlib  # Python 3.4+ 标准库
+
+# 进程管理
+subprocess  # 标准库
+signal      # 标准库
+threading   # 标准库
+
+# 命令行参数解析
+argparse    # 标准库
+
+# JSON处理
+json        # 标准库
+
+# 时间处理
+time        # 标准库
+datetime    # 标准库
+
+# ============ 可选增强功能 ============
+# 如果需要更好的错误追踪
+# rich>=13.0.0
+# 
+# 如果需要配置文件支持
+# pyyaml>=6.0
+# toml>=0.10.2
+# 
+# 如果需要数据库开发工具
+# sqlite3   # 标准库
+# 
+# 如果需要更好的日志
+# loguru>=0.7.0
+
+# ============ 注意事项 ============
+# 1. 核心依赖必须安装，否则系统无法运行
+# 2. 开发依赖主要用于热重载和文件监控
+# 3. 可选依赖根据需要安装
+# 4. 所有标准库模块无需通过pip安装
+
+# ============ 安装命令 ============
+# 基础安装：
+# pip install -r requirements-dev.txt
+#
+# 只安装核心依赖：  
+# pip install aiohttp aiohttp-cors websockets pandas numpy ccxt watchdog
+#
+# 包含可选工具：
+# pip install -r requirements-dev.txt black isort mypy flake8

@@ -1,0 +1,2773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI量化数据分析平台 - 现代化设计</title>
+    
+    <!-- 外部资源 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
+    
+    <style>
+        /* 全局重置和基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* 现代化色彩方案 */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            
+            /* 基础色彩 */
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-muted: #a0aec0;
+            --border-color: #e2e8f0;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --shadow-heavy: 0 20px 40px rgba(0, 0, 0, 0.15);
+            
+            /* 间距 */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            
+            /* 圆角 */
+            --radius-sm: 0.5rem;
+            --radius-md: 1rem;
+            --radius-lg: 1.5rem;
+            --radius-xl: 2rem;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* 布局结构 */
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            box-shadow: var(--shadow-light);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .logo {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .logo h1 {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* 导航菜单 */
+        .nav-menu {
+            padding: var(--spacing-md);
+        }
+
+        .nav-item {
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .nav-button {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            text-align: left;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .nav-button:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: translateX(4px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .nav-button.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .nav-button i {
+            width: 20px;
+            font-size: 1.1rem;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: var(--spacing-lg);
+            min-height: 100vh;
+        }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 页面标题 */
+        .page-header {
+            margin-bottom: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* 卡片组件 */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            margin-bottom: var(--spacing-lg);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* 统计卡片网格 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-md);
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* 按钮组件 */
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-gradient);
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-success {
+            background: var(--success-gradient);
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* 图表容器 */
+        .chart-container {
+            height: 400px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-color);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* 内容网格 */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        /* 因子卡片 */
+        .factor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .factor-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .factor-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .factor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .factor-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .factor-score {
+            background: var(--success-gradient);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* 表格样式 */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: var(--spacing-sm) var(--spacing-md);
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        /* 表单组件 */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: var(--spacing-sm);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--bg-secondary);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* 状态指示器 */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-online {
+            background: rgba(34, 197, 94, 0.1);
+            color: #059669;
+        }
+
+        .status-offline {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+
+        .status-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+        }
+
+        /* 加载状态 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 提示框 */
+        .toast-container {
+            position: fixed;
+            top: var(--spacing-lg);
+            right: var(--spacing-lg);
+            z-index: 10000;
+        }
+
+        .toast {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            box-shadow: var(--shadow-heavy);
+            border-left: 4px solid #667eea;
+            min-width: 300px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* 移动端菜单按钮 */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .mobile-menu-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .mobile-menu-btn:active {
+            transform: translateY(0);
+            transition: transform 0.1s;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .mobile-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* 响应式设计 - 优化版 */
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-lg);
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-md);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 1000;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                width: 280px;
+                box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding-top: 70px; /* 为移动菜单按钮留出空间 */
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 0;
+            }
+
+            .main-content {
+                padding: var(--spacing-md);
+                padding-top: 70px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+            
+            .stat-card {
+                padding: var(--spacing-md);
+                transition: all 0.2s ease;
+            }
+            
+            .stat-card:active {
+                transform: scale(0.98);
+                background: rgba(255, 255, 255, 0.9);
+            }
+            
+            .factor-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title {
+                font-size: 1.75rem;
+                margin-bottom: var(--spacing-sm);
+            }
+
+            .page-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .card {
+                margin-bottom: var(--spacing-md);
+                padding: var(--spacing-md);
+            }
+
+            .nav-button {
+                padding: 12px 20px;
+                font-size: 14px;
+                transition: all 0.2s ease;
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            .nav-button:active {
+                background: rgba(102, 126, 234, 0.2);
+                transform: scale(0.95);
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 14px;
+                min-height: 44px; /* 触摸友好的最小高度 */
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .btn:active {
+                transform: scale(0.95);
+                transition: transform 0.1s;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content {
+                padding: var(--spacing-sm);
+                padding-top: 65px;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .stats-grid {
+                gap: var(--spacing-sm);
+            }
+            
+            .stat-card {
+                padding: var(--spacing-sm);
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .card {
+                padding: var(--spacing-sm);
+                margin-bottom: var(--spacing-sm);
+            }
+
+            .btn {
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+
+            .nav-button {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+        }
+
+        /* 动画增强 */
+        .page {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .page:not(.active) {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+
+        .page.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* 加载动画 */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* 触摸优化 */
+        @media (hover: none) and (pointer: coarse) {
+            .btn:hover {
+                transform: none;
+                background: initial;
+            }
+            
+            .nav-button:hover {
+                background: initial;
+            }
+        }
+
+        /* 特殊效果 */
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 移动端菜单按钮 -->
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- 移动端遮罩层 -->
+        <div class="mobile-overlay" onclick="closeMobileMenu()"></div>
+
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <h1>智能因子实验室</h1>
+                <p>AI驱动的量化研究平台</p>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <button class="nav-button active" data-page="dashboard">
+                        <i class="fas fa-chart-line"></i>
+                        数据仪表盘
+                    </button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" data-page="factor-workshop">
+                        <i class="fas fa-flask"></i>
+                        智能因子工坊
+                    </button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" data-page="backtest-center">
+                        <i class="fas fa-rocket"></i>
+                        策略回测中心
+                    </button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" data-page="factor-market">
+                        <i class="fas fa-store"></i>
+                        因子市场
+                    </button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" data-page="data-center">
+                        <i class="fas fa-database"></i>
+                        数据中心
+                    </button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" data-page="analysis-workbench">
+                        <i class="fas fa-microscope"></i>
+                        分析工作台
+                    </button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" data-page="report-center">
+                        <i class="fas fa-file-alt"></i>
+                        报告中心
+                    </button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" data-page="settings">
+                        <i class="fas fa-cog"></i>
+                        个人设置
+                    </button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 数据仪表盘页面 -->
+            <div id="dashboard-page" class="page active">
+                <div class="page-header">
+                    <h1 class="page-title">数据仪表盘</h1>
+                    <p class="page-subtitle">实时监控系统状态和核心指标</p>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="stat-value" id="total-symbols">1,247</div>
+                        <div class="stat-label">交易品种数量</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="stat-value" id="total-datapoints">2.4M</div>
+                        <div class="stat-label">数据点总量</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="stat-value" id="active-factors">156</div>
+                        <div class="stat-label">活跃因子数量</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="stat-value" id="update-frequency">2.3Hz</div>
+                        <div class="stat-label">数据更新频率</div>
+                    </div>
+                </div>
+
+                <!-- 内容网格 -->
+                <div class="content-grid">
+                    <!-- 主要图表 -->
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">市场概览</h3>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-refresh"></i>
+                                    刷新
+                                </button>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="market-overview-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">因子表现热力图</h3>
+                            </div>
+                            <div class="chart-container">
+                                <div id="factor-heatmap"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 侧边信息 -->
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">数据源状态</h3>
+                            </div>
+                            <div id="data-sources-status">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                                    <span>Binance API</span>
+                                    <span class="status-indicator status-online">
+                                        <i class="fas fa-circle"></i>
+                                        在线
+                                    </span>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                                    <span>OKX WebSocket</span>
+                                    <span class="status-indicator status-online">
+                                        <i class="fas fa-circle"></i>
+                                        在线
+                                    </span>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                                    <span>Coinglass数据</span>
+                                    <span class="status-indicator status-warning">
+                                        <i class="fas fa-circle"></i>
+                                        延迟
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">AI引擎状态</h3>
+                            </div>
+                            <div id="ai-engines-status">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                                    <span>DeepSeek</span>
+                                    <span class="status-indicator status-online">
+                                        <i class="fas fa-brain"></i>
+                                        运行中
+                                    </span>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                                    <span>Gemini Pro</span>
+                                    <span class="status-indicator status-online">
+                                        <i class="fas fa-brain"></i>
+                                        运行中
+                                    </span>
+                                </div>
+                                <div style="text-align: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                                    <div style="font-size: 0.875rem; color: var(--text-muted);">今日调用成本</div>
+                                    <div style="font-size: 1.5rem; font-weight: 600; color: var(--text-primary);">$12.43</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">快速操作</h3>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <button class="btn btn-primary" onclick="navigateToPage('factor-workshop')">
+                                    <i class="fas fa-plus"></i>
+                                    创建新因子
+                                </button>
+                                <button class="btn btn-secondary" onclick="navigateToPage('backtest-center')">
+                                    <i class="fas fa-play"></i>
+                                    启动回测
+                                </button>
+                                <button class="btn btn-success" onclick="navigateToPage('report-center')">
+                                    <i class="fas fa-download"></i>
+                                    导出报告
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 智能因子工坊页面 -->
+            <div id="factor-workshop-page" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">智能因子工坊</h1>
+                    <p class="page-subtitle">AI辅助的因子创建和优化平台</p>
+                </div>
+
+                <div class="content-grid">
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">AI因子生成器</h3>
+                                <button class="btn btn-primary" onclick="startAIGeneration()">
+                                    <i class="fas fa-magic"></i>
+                                    开始生成
+                                </button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">描述您的因子需求</label>
+                                <textarea class="form-control" rows="4" placeholder="例如：我需要一个能够识别价格动量反转的因子，适用于加密货币市场，时间周期为日线..."></textarea>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">生成数量</label>
+                                    <select class="form-control">
+                                        <option>3个因子</option>
+                                        <option>5个因子</option>
+                                        <option>10个因子</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">复杂度</label>
+                                    <select class="form-control">
+                                        <option>简单</option>
+                                        <option>中等</option>
+                                        <option>复杂</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">AI引擎选择</label>
+                                <div style="display: flex; gap: 1rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="radio" name="ai-engine" value="deepseek" checked>
+                                        <span>DeepSeek (创新)</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="radio" name="ai-engine" value="gemini">
+                                        <span>Gemini (稳定)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">因子预览</h3>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="factor-preview-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">生成历史</h3>
+                            </div>
+                            <div id="generation-history" style="max-height: 400px; overflow-y: auto;">
+                                <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                                    暂无生成历史
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">生成统计</h3>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>今日生成</span>
+                                <span style="font-weight: 600;">12个</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>成功率</span>
+                                <span style="font-weight: 600; color: #059669;">89.2%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>平均评分</span>
+                                <span style="font-weight: 600;">7.8</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>今日成本</span>
+                                <span style="font-weight: 600;">$8.76</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 生成的因子展示 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">生成的因子</h3>
+                    </div>
+                    <div class="factor-grid" id="generated-factors">
+                        <!-- 动态生成的因子卡片将在这里显示 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 策略回测中心页面 -->
+            <div id="backtest-center-page" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">策略回测中心</h1>
+                    <p class="page-subtitle">专业的策略回测和评估平台</p>
+                </div>
+
+                <div class="content-grid">
+                    <!-- 策略配置区域 -->
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">策略配置</h3>
+                                <button class="btn btn-primary" onclick="startBacktest()">
+                                    <i class="fas fa-rocket"></i>
+                                    启动回测
+                                </button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">策略名称</label>
+                                <input type="text" class="form-control" value="多因子量化策略 v2.1" placeholder="请输入策略名称">
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">回测开始时间</label>
+                                    <input type="date" class="form-control" value="2024-01-01">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">回测结束时间</label>
+                                    <input type="date" class="form-control" value="2025-01-31">
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">初始资金</label>
+                                    <input type="number" class="form-control" value="100000" placeholder="100000">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">手续费率</label>
+                                    <input type="number" class="form-control" value="0.001" step="0.001" placeholder="0.001">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">选择因子组合</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                        <input type="checkbox" checked>
+                                        <span>RSI动量因子 (权重: 30%)</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                        <input type="checkbox" checked>
+                                        <span>波动率突破因子 (权重: 25%)</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                        <input type="checkbox" checked>
+                                        <span>成交量价格背离因子 (权重: 20%)</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                        <input type="checkbox">
+                                        <span>情绪反转因子 (权重: 15%)</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                        <input type="checkbox">
+                                        <span>资金流向因子 (权重: 10%)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">风险控制</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                                    <div>
+                                        <label class="form-label" style="font-size: 0.875rem; margin-bottom: 0.25rem;">最大回撤限制</label>
+                                        <input type="number" class="form-control" value="15" placeholder="15">
+                                        <span style="font-size: 0.75rem; color: var(--text-muted);">百分比</span>
+                                    </div>
+                                    <div>
+                                        <label class="form-label" style="font-size: 0.875rem; margin-bottom: 0.25rem;">单次最大损失</label>
+                                        <input type="number" class="form-control" value="5" placeholder="5">
+                                        <span style="font-size: 0.75rem; color: var(--text-muted);">百分比</span>
+                                    </div>
+                                    <div>
+                                        <label class="form-label" style="font-size: 0.875rem; margin-bottom: 0.25rem;">杠杆倍数</label>
+                                        <select class="form-control">
+                                            <option value="1">1x (无杠杆)</option>
+                                            <option value="2">2x</option>
+                                            <option value="3">3x</option>
+                                            <option value="5">5x</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 回测进度 -->
+                        <div class="card" id="backtest-progress" style="display: none;">
+                            <div class="card-header">
+                                <h3 class="card-title">回测执行中</h3>
+                                <div class="status-indicator status-warning">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    运行中
+                                </div>
+                            </div>
+                            <div style="text-align: center; padding: 2rem;">
+                                <div class="progress-bar-container" style="width: 100%; height: 12px; background: var(--border-color); border-radius: 6px; margin-bottom: 1rem;">
+                                    <div class="progress-bar-fill" style="height: 100%; background: var(--primary-gradient); border-radius: 6px; width: 0%; transition: width 0.5s ease;"></div>
+                                </div>
+                                <div style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 0.5rem;">
+                                    正在处理: <span id="backtest-current-step">数据准备中...</span>
+                                </div>
+                                <div style="color: var(--text-muted); font-size: 0.875rem;">
+                                    预计完成时间: <span id="backtest-eta">预计 5-8 分钟</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 回测结果区域 -->
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">回测历史</h3>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-download"></i>
+                                    导出报告
+                                </button>
+                            </div>
+                            
+                            <div id="backtest-history">
+                                <div class="backtest-history-item" style="display: flex; align-items: center; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 0.75rem; cursor: pointer; transition: all 0.3s ease;">
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 0.25rem;">多因子组合策略 v2.0</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">2024-01-27 14:32</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-weight: 600; color: #22c55e;">+24.8%</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">年化收益</div>
+                                    </div>
+                                    <div style="margin-left: 1rem;">
+                                        <div class="status-indicator status-online">
+                                            <i class="fas fa-check"></i>
+                                            完成
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="backtest-history-item" style="display: flex; align-items: center; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 0.75rem; cursor: pointer; transition: all 0.3s ease;">
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 0.25rem;">技术指标组合策略</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">2024-01-26 16:45</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-weight: 600; color: #22c55e;">+18.3%</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">年化收益</div>
+                                    </div>
+                                    <div style="margin-left: 1rem;">
+                                        <div class="status-indicator status-online">
+                                            <i class="fas fa-check"></i>
+                                            完成
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="backtest-history-item" style="display: flex; align-items: center; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 0.75rem; cursor: pointer; transition: all 0.3s ease;">
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 0.25rem;">波动率突破策略</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">2024-01-25 11:20</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-weight: 600; color: #ef4444;">-3.2%</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted);">年化收益</div>
+                                    </div>
+                                    <div style="margin-left: 1rem;">
+                                        <div class="status-indicator status-online">
+                                            <i class="fas fa-check"></i>
+                                            完成
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 快速统计 -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">统计概览</h3>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>历史回测次数</span>
+                                <span style="font-weight: 600;">47 次</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>平均年化收益</span>
+                                <span style="font-weight: 600; color: #22c55e;">+15.7%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>最佳策略收益</span>
+                                <span style="font-weight: 600; color: #22c55e;">+34.2%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>成功率</span>
+                                <span style="font-weight: 600;">72.3%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>平均夏普比率</span>
+                                <span style="font-weight: 600;">1.68</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 详细分析结果 -->
+                <div class="card" id="backtest-results" style="display: none;">
+                    <div class="card-header">
+                        <h3 class="card-title">回测分析结果</h3>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-secondary" onclick="exportBacktestReport()">
+                                <i class="fas fa-file-pdf"></i>
+                                导出PDF
+                            </button>
+                            <button class="btn btn-secondary" onclick="saveStrategy()">
+                                <i class="fas fa-save"></i>
+                                保存策略
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 性能指标网格 -->
+                    <div class="stats-grid" style="margin-bottom: 2rem;">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--success-gradient);">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-value" id="backtest-total-return">+24.8%</div>
+                            <div class="stat-label">总收益率</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--primary-gradient);">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="stat-value" id="backtest-annualized-return">+42.3%</div>
+                            <div class="stat-label">年化收益率</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--secondary-gradient);">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="stat-value" id="backtest-sharpe-ratio">1.85</div>
+                            <div class="stat-label">夏普比率</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--warning-gradient);">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="stat-value" id="backtest-max-drawdown">-8.3%</div>
+                            <div class="stat-label">最大回撤</div>
+                        </div>
+                    </div>
+
+                    <!-- 收益曲线图 -->
+                    <div class="content-grid">
+                        <div class="chart-container">
+                            <canvas id="backtest-performance-chart"></canvas>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 1rem; color: var(--text-primary);">详细指标</h4>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                                <span>胜率</span>
+                                <span style="font-weight: 600;">68.5%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                                <span>信息比率</span>
+                                <span style="font-weight: 600;">1.34</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                                <span>卡玛比率</span>
+                                <span style="font-weight: 600;">3.12</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                                <span>索提诺比率</span>
+                                <span style="font-weight: 600;">2.45</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                                <span>年化波动率</span>
+                                <span style="font-weight: 600;">18.7%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                                <span>收益回撤比</span>
+                                <span style="font-weight: 600;">2.98</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>交易次数</span>
+                                <span style="font-weight: 600;">247 次</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 因子市场页面 -->
+            <div id="factor-market-page" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">因子市场</h1>
+                    <p class="page-subtitle">发现和分享优质因子</p>
+                </div>
+
+                <div class="content-grid">
+                    <!-- 因子库浏览 -->
+                    <div style="grid-column: 1 / -1;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">因子库</h3>
+                                <div style="display: flex; gap: 1rem; align-items: center;">
+                                    <input type="text" class="form-control" placeholder="搜索因子..." style="width: 200px;">
+                                    <select class="form-control" style="width: 150px;">
+                                        <option>全部分类</option>
+                                        <option>技术指标</option>
+                                        <option>价格动量</option>
+                                        <option>成交量</option>
+                                        <option>波动率</option>
+                                        <option>情绪指标</option>
+                                    </select>
+                                    <button class="btn btn-primary" onclick="addNewFactor()">
+                                        <i class="fas fa-plus"></i>
+                                        添加因子
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 因子网格 -->
+                            <div class="factor-grid" id="factor-library-grid">
+                                <!-- 因子1 -->
+                                <div class="factor-card">
+                                    <div class="factor-header">
+                                        <div class="factor-name">RSI动量因子</div>
+                                        <div class="factor-score">8.7/10</div>
+                                    </div>
+                                    <div style="margin-bottom: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                            <span style="color: var(--text-muted);">信息系数 (IC)</span>
+                                            <span style="font-weight: 600; color: #22c55e;">0.156</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                            <span style="color: var(--text-muted);">信息比率 (ICIR)</span>
+                                            <span style="font-weight: 600;">1.23</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                            <span style="color: var(--text-muted);">夏普比率</span>
+                                            <span style="font-weight: 600;">1.85</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem;">
+                                            <span style="color: var(--text-muted);">胜率</span>
+                                            <span style="font-weight: 600;">64.2%</span>
+                                        </div>
+                                    </div>
+                                    <div style="background: #f8fafc; padding: 0.75rem; border-radius: var(--radius-md); font-family: 'Monaco', 'Consolas', monospace; font-size: 0.8rem; color: #2d3748; margin-bottom: 1rem;">
+                                        factor = (rsi(close, 14) - 50) / 50 * momentum(close, 20)
+                                    </div>
+                                    <div style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.4; margin-bottom: 1rem;">
+                                        基于RSI指标构建的动量因子，适用于中短期趋势预测
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <span class="status-indicator status-online" style="font-size: 0.75rem;">技术指标</span>
+                                            <span class="status-indicator" style="background: rgba(139, 92, 246, 0.1); color: #7c3aed; font-size: 0.75rem;">AI生成</span>
+                                        </div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted);">使用 25 次</div>
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button class="btn btn-secondary" style="flex: 1; padding: 0.5rem; font-size: 0.875rem;">
+                                            <i class="fas fa-chart-line"></i>
+                                            分析
+                                        </button>
+                                        <button class="btn btn-primary" style="flex: 1; padding: 0.5rem; font-size: 0.875rem;" onclick="useFactor('rsi_momentum')">
+                                            <i class="fas fa-play"></i>
+                                            使用
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 因子2 -->
+                                <div class="factor-card">
+                                    <div class="factor-header">
+                                        <div class="factor-name">波动率突破因子</div>
+                                        <div class="factor-score">9.2/10</div>
+                                    </div>
+                                    <div style="margin-bottom: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                            <span style="color: var(--text-muted);">信息系数 (IC)</span>
+                                            <span style="font-weight: 600; color: #22c55e;">0.178</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                            <span style="color: var(--text-muted);">信息比率 (ICIR)</span>
+                                            <span style="font-weight: 600;">1.34</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                            <span style="color: var(--text-muted);">夏普比率</span>
+                                            <span style="font-weight: 600;">2.12</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem;">
+                                            <span style="color: var(--text-muted);">胜率</span>
+                                            <span style="font-weight: 600;">69.5%</span>
+                                        </div>
+                                    </div>
+                                    <div style="background: #f8fafc; padding: 0.75rem; border-radius: var(--radius-md); font-family: 'Monaco', 'Consolas', monospace; font-size: 0.8rem; color: #2d3748; margin-bottom: 1rem;">
+                                        factor = sign(returns) * max(0, volatility - threshold)
+                                    </div>
+                                    <div style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.4; margin-bottom: 1rem;">
+                                        检测波动率异常突破的因子，在高波动环境下捕捉趋势延续信号
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <span class="status-indicator" style="background: rgba(34, 197, 94, 0.1); color: #059669; font-size: 0.75rem;">波动率</span>
+                                            <span class="status-indicator" style="background: rgba(139, 92, 246, 0.1); color: #7c3aed; font-size: 0.75rem;">AI生成</span>
+                                        </div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted);">使用 18 次</div>
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button class="btn btn-secondary" style="flex: 1; padding: 0.5rem; font-size: 0.875rem;">
+                                            <i class="fas fa-chart-line"></i>
+                                            分析
+                                        </button>
+                                        <button class="btn btn-primary" style="flex: 1; padding: 0.5rem; font-size: 0.875rem;" onclick="useFactor('volatility_breakout')">
+                                            <i class="fas fa-play"></i>
+                                            使用
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 因子3 -->
+                                <div class="factor-card">
+                                    <div class="factor-header">
+                                        <div class="factor-name">成交量价格背离因子</div>
+                                        <div class="factor-score">7.8/10</div>
+                                    </div>
+                                    <div style="margin-bottom: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                            <span style="color: var(--text-muted);">信息系数 (IC)</span>
+                                            <span style="font-weight: 600; color: #22c55e;">0.132</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                            <span style="color: var(--text-muted);">信息比率 (ICIR)</span>
+                                            <span style="font-weight: 600;">0.98</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                            <span style="color: var(--text-muted);">夏普比率</span>
+                                            <span style="font-weight: 600;">1.45</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem;">
+                                            <span style="color: var(--text-muted);">胜率</span>
+                                            <span style="font-weight: 600;">61.7%</span>
+                                        </div>
+                                    </div>
+                                    <div style="background: #f8fafc; padding: 0.75rem; border-radius: var(--radius-md); font-family: 'Monaco', 'Consolas', monospace; font-size: 0.8rem; color: #2d3748; margin-bottom: 1rem;">
+                                        factor = correlation(price_change, volume_change, 20) * -1
+                                    </div>
+                                    <div style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.4; margin-bottom: 1rem;">
+                                        检测价格与成交量背离的反转信号因子
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <span class="status-indicator" style="background: rgba(245, 158, 11, 0.1); color: #d97706; font-size: 0.75rem;">成交量</span>
+                                            <span class="status-indicator" style="background: rgba(100, 116, 139, 0.1); color: #475569; font-size: 0.75rem;">手动创建</span>
+                                        </div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted);">使用 12 次</div>
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button class="btn btn-secondary" style="flex: 1; padding: 0.5rem; font-size: 0.875rem;">
+                                            <i class="fas fa-chart-line"></i>
+                                            分析
+                                        </button>
+                                        <button class="btn btn-primary" style="flex: 1; padding: 0.5rem; font-size: 0.875rem;" onclick="useFactor('volume_divergence')">
+                                            <i class="fas fa-play"></i>
+                                            使用
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 因子4 -->
+                                <div class="factor-card">
+                                    <div class="factor-header">
+                                        <div class="factor-name">情绪反转因子</div>
+                                        <div class="factor-score">8.1/10</div>
+                                    </div>
+                                    <div style="margin-bottom: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                            <span style="color: var(--text-muted);">信息系数 (IC)</span>
+                                            <span style="font-weight: 600; color: #22c55e;">0.143</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                            <span style="color: var(--text-muted);">信息比率 (ICIR)</span>
+                                            <span style="font-weight: 600;">1.12</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                            <span style="color: var(--text-muted);">夏普比率</span>
+                                            <span style="font-weight: 600;">1.67</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem;">
+                                            <span style="color: var(--text-muted);">胜率</span>
+                                            <span style="font-weight: 600;">65.8%</span>
+                                        </div>
+                                    </div>
+                                    <div style="background: #f8fafc; padding: 0.75rem; border-radius: var(--radius-md); font-family: 'Monaco', 'Consolas', monospace; font-size: 0.8rem; color: #2d3748; margin-bottom: 1rem;">
+                                        factor = fear_greed_index / 100 * sentiment_divergence
+                                    </div>
+                                    <div style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.4; margin-bottom: 1rem;">
+                                        基于市场情绪指标构建的反转因子，捕捉极端情绪后的回归机会
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <span class="status-indicator" style="background: rgba(239, 68, 68, 0.1); color: #dc2626; font-size: 0.75rem;">情绪指标</span>
+                                            <span class="status-indicator" style="background: rgba(139, 92, 246, 0.1); color: #7c3aed; font-size: 0.75rem;">AI生成</span>
+                                        </div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted);">使用 8 次</div>
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button class="btn btn-secondary" style="flex: 1; padding: 0.5rem; font-size: 0.875rem;">
+                                            <i class="fas fa-chart-line"></i>
+                                            分析
+                                        </button>
+                                        <button class="btn btn-primary" style="flex: 1; padding: 0.5rem; font-size: 0.875rem;" onclick="useFactor('sentiment_reversal')">
+                                            <i class="fas fa-play"></i>
+                                            使用
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 因子统计 -->
+                <div class="stats-grid" style="margin-top: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--primary-gradient);">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">因子总数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--success-gradient);">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="stat-value">89</div>
+                        <div class="stat-label">AI生成因子</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--secondary-gradient);">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-value">8.3</div>
+                        <div class="stat-label">平均评分</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--warning-gradient);">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-value">73%</div>
+                        <div class="stat-label">平均胜率</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 数据中心页面 -->
+            <div id="data-center-page" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">数据中心</h1>
+                    <p class="page-subtitle">统一的数据源管理和监控</p>
+                </div>
+
+                <div class="content-grid">
+                    <!-- 数据源状态 -->
+                    <div style="grid-column: 1 / -1;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">数据源状态监控</h3>
+                                <div style="display: flex; gap: 1rem;">
+                                    <button class="btn btn-secondary" onclick="refreshDataSources()">
+                                        <i class="fas fa-sync-alt"></i>
+                                        刷新状态
+                                    </button>
+                                    <button class="btn btn-primary" onclick="addDataSource()">
+                                        <i class="fas fa-plus"></i>
+                                        添加数据源
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 数据源列表 -->
+                            <div id="data-sources-list">
+                                <!-- 数据源1 - Binance -->
+                                <div class="data-source-card" style="display: flex; align-items: center; padding: 1.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 1rem; background: var(--bg-card);">
+                                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #f7931e, #fdb931); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; margin-right: 1.5rem;">
+                                        B
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 600;">Binance Spot API</h4>
+                                            <div class="status-indicator status-online">
+                                                <i class="fas fa-circle"></i>
+                                                在线
+                                            </div>
+                                        </div>
+                                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">现货交易数据 • WebSocket + REST API</div>
+                                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.2rem; font-weight: 600; color: var(--text-primary);">95ms</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">延迟</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.2rem; font-weight: 600; color: var(--text-primary);">1.2M</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">日数据量</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.2rem; font-weight: 600; color: #22c55e;">99.8%</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">可用率</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.2rem; font-weight: 600; color: var(--text-primary);">2分钟前</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">最后更新</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                            <i class="fas fa-cog"></i>
+                                            配置
+                                        </button>
+                                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                            <i class="fas fa-chart-bar"></i>
+                                            监控
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 数据源2 - OKX -->
+                                <div class="data-source-card" style="display: flex; align-items: center; padding: 1.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 1rem; background: var(--bg-card);">
+                                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #0066cc, #004499); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; margin-right: 1.5rem;">
+                                        O
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 600;">OKX Market Data</h4>
+                                            <div class="status-indicator status-online">
+                                                <i class="fas fa-circle"></i>
+                                                在线
+                                            </div>
+                                        </div>
+                                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">期货和现货数据 • WebSocket 实时流</div>
+                                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.2rem; font-weight: 600; color: var(--text-primary);">78ms</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">延迟</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.2rem; font-weight: 600; color: var(--text-primary);">0.8M</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">日数据量</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.2rem; font-weight: 600; color: #22c55e;">99.5%</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">可用率</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.2rem; font-weight: 600; color: var(--text-primary);">1分钟前</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">最后更新</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                            <i class="fas fa-cog"></i>
+                                            配置
+                                        </button>
+                                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                            <i class="fas fa-chart-bar"></i>
+                                            监控
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 数据源3 - Coinglass -->
+                                <div class="data-source-card" style="display: flex; align-items: center; padding: 1.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-lg); margin-bottom: 1rem; background: var(--bg-card);">
+                                    <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; margin-right: 1.5rem;">
+                                        C
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                                            <h4 style="margin: 0; font-size: 1.1rem; font-weight: 600;">Coinglass情绪数据</h4>
+                                            <div class="status-indicator status-warning">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                                延迟
+                                            </div>
+                                        </div>
+                                        <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">市场情绪指标和链上数据 • REST API</div>
+                                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.2rem; font-weight: 600; color: #f59e0b;">1.8s</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">延迟</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.2rem; font-weight: 600; color: var(--text-primary);">45K</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">日数据量</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.2rem; font-weight: 600; color: #f59e0b;">97.2%</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">可用率</div>
+                                            </div>
+                                            <div style="text-align: center;">
+                                                <div style="font-size: 1.2rem; font-weight: 600; color: var(--text-primary);">5分钟前</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">最后更新</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                            <i class="fas fa-cog"></i>
+                                            配置
+                                        </button>
+                                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                            <i class="fas fa-chart-bar"></i>
+                                            监控
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 数据统计和监控 -->
+                <div class="content-grid" style="margin-top: 2rem;">
+                    <!-- 数据质量监控 -->
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">数据质量监控</h3>
+                            </div>
+                            
+                            <div style="margin-bottom: 2rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <span style="color: var(--text-secondary);">数据完整性</span>
+                                    <span style="font-weight: 600; color: #22c55e;">98.5%</span>
+                                </div>
+                                <div style="width: 100%; height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden;">
+                                    <div style="height: 100%; background: linear-gradient(90deg, #22c55e, #16a34a); width: 98.5%; transition: width 0.5s ease;"></div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 2rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <span style="color: var(--text-secondary);">数据准确性</span>
+                                    <span style="font-weight: 600; color: #22c55e;">99.2%</span>
+                                </div>
+                                <div style="width: 100%; height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden;">
+                                    <div style="height: 100%; background: linear-gradient(90deg, #22c55e, #16a34a); width: 99.2%; transition: width 0.5s ease;"></div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 2rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <span style="color: var(--text-secondary);">数据及时性</span>
+                                    <span style="font-weight: 600; color: #f59e0b;">96.8%</span>
+                                </div>
+                                <div style="width: 100%; height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden;">
+                                    <div style="height: 100%; background: linear-gradient(90deg, #f59e0b, #eab308); width: 96.8%; transition: width 0.5s ease;"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <span style="color: var(--text-secondary);">数据一致性</span>
+                                    <span style="font-weight: 600; color: #22c55e;">97.5%</span>
+                                </div>
+                                <div style="width: 100%; height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden;">
+                                    <div style="height: 100%; background: linear-gradient(90deg, #22c55e, #16a34a); width: 97.5%; transition: width 0.5s ease;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 存储统计 -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">存储统计</h3>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>总数据量</span>
+                                <span style="font-weight: 600;">2.4TB</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>今日新增</span>
+                                <span style="font-weight: 600; color: #22c55e;">+125GB</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>存储使用率</span>
+                                <span style="font-weight: 600;">73%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>预计可用天数</span>
+                                <span style="font-weight: 600;">147天</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 数据源统计图表 -->
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">数据源分布</h3>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="data-source-distribution-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 实时监控警报 -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">实时警报</h3>
+                            </div>
+                            
+                            <div id="data-alerts">
+                                <div style="display: flex; align-items: center; padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: var(--radius-md); border-left: 4px solid #f59e0b; margin-bottom: 1rem;">
+                                    <div style="color: #f59e0b; margin-right: 0.75rem;">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">数据延迟警报</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-secondary);">Coinglass API响应时间超过阈值</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">5分钟前</div>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; align-items: center; padding: 1rem; background: rgba(34, 197, 94, 0.1); border-radius: var(--radius-md); border-left: 4px solid #22c55e; margin-bottom: 1rem;">
+                                    <div style="color: #22c55e; margin-right: 0.75rem;">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">连接恢复</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-secondary);">Binance WebSocket连接已恢复正常</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">12分钟前</div>
+                                    </div>
+                                </div>
+
+                                <div style="text-align: center; color: var(--text-muted); padding: 1rem;">
+                                    <i class="fas fa-shield-alt" style="font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.5;"></i>
+                                    <div style="font-size: 0.9rem;">系统运行正常</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 数据源性能统计 -->
+                <div class="stats-grid" style="margin-top: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--primary-gradient);">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">活跃数据源</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--success-gradient);">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="stat-value">1.2M</div>
+                        <div class="stat-label">日数据接收量</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--secondary-gradient);">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-value">89ms</div>
+                        <div class="stat-label">平均延迟</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--warning-gradient);">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-value">98.5%</div>
+                        <div class="stat-label">平均可用率</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分析工作台页面 -->
+            <div id="analysis-workbench-page" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">分析工作台</h1>
+                    <p class="page-subtitle">综合的量化分析工具集</p>
+                </div>
+                <div class="card">
+                    <p style="text-align: center; color: var(--text-muted); padding: 3rem;">分析工作台正在开发中...</p>
+                </div>
+            </div>
+
+            <!-- 报告中心页面 -->
+            <div id="report-center-page" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">报告中心</h1>
+                    <p class="page-subtitle">自动化报告生成和管理</p>
+                </div>
+
+                <div class="content-grid">
+                    <!-- 报告生成器 -->
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">智能报告生成器</h3>
+                                <button class="btn btn-primary" onclick="generateReport()">
+                                    <i class="fas fa-magic"></i>
+                                    生成报告
+                                </button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">报告类型</label>
+                                <select class="form-control" id="report-type">
+                                    <option value="factor-analysis">因子分析报告</option>
+                                    <option value="backtest-summary">回测汇总报告</option>
+                                    <option value="performance-analysis">业绩分析报告</option>
+                                    <option value="risk-assessment">风险评估报告</option>
+                                    <option value="market-overview">市场概览报告</option>
+                                    <option value="data-quality">数据质量报告</option>
+                                </select>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">报告周期</label>
+                                    <select class="form-control">
+                                        <option value="daily">日报</option>
+                                        <option value="weekly">周报</option>
+                                        <option value="monthly" selected>月报</option>
+                                        <option value="quarterly">季报</option>
+                                        <option value="yearly">年报</option>
+                                        <option value="custom">自定义</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">输出格式</label>
+                                    <select class="form-control">
+                                        <option value="pdf">PDF 报告</option>
+                                        <option value="html">HTML 网页</option>
+                                        <option value="excel">Excel 表格</option>
+                                        <option value="word">Word 文档</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">包含内容</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                        <input type="checkbox" checked>
+                                        <span>执行摘要</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                        <input type="checkbox" checked>
+                                        <span>关键指标</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                        <input type="checkbox" checked>
+                                        <span>图表分析</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                        <input type="checkbox">
+                                        <span>风险分析</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                        <input type="checkbox">
+                                        <span>建议措施</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                        <input type="checkbox">
+                                        <span>附录详情</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">AI增强功能</label>
+                                <div style="display: flex; gap: 1rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" checked>
+                                        <span>智能洞察分析</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox" checked>
+                                        <span>趋势预测</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <input type="checkbox">
+                                        <span>异常检测</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 报告进度 -->
+                            <div class="card" id="report-progress" style="display: none; margin-top: 1rem; padding: 1rem;">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                    <div class="loading-spinner" style="width: 30px; height: 30px;"></div>
+                                    <span style="font-weight: 600;">正在生成报告...</span>
+                                </div>
+                                <div style="width: 100%; height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden;">
+                                    <div id="report-progress-bar" style="height: 100%; background: var(--primary-gradient); width: 0%; transition: width 0.5s ease;"></div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-muted);">
+                                    <span id="report-current-step">正在收集数据...</span>
+                                    <span id="report-progress-percent">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 报告历史 -->
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">报告历史</h3>
+                                <button class="btn btn-secondary" onclick="refreshReports()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    刷新
+                                </button>
+                            </div>
+                            
+                            <div id="reports-list">
+                                <!-- 报告1 -->
+                                <div class="report-item" style="display: flex; align-items: center; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 0.75rem; cursor: pointer; transition: all 0.3s ease;">
+                                    <div style="width: 50px; height: 50px; background: var(--primary-gradient); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; margin-right: 1rem;">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 0.25rem;">月度因子分析报告</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.25rem;">PDF • 2.3MB • 包含156个因子分析</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted);">2024-01-27 15:42 生成</div>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                        <button class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                            <i class="fas fa-download"></i>
+                                            下载
+                                        </button>
+                                        <button class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                            <i class="fas fa-eye"></i>
+                                            预览
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 报告2 -->
+                                <div class="report-item" style="display: flex; align-items: center; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 0.75rem; cursor: pointer; transition: all 0.3s ease;">
+                                    <div style="width: 50px; height: 50px; background: var(--success-gradient); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; margin-right: 1rem;">
+                                        <i class="fas fa-rocket"></i>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 0.25rem;">回测业绩汇总报告</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.25rem;">PDF • 4.7MB • 包含47次回测结果</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted);">2024-01-26 14:20 生成</div>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                        <button class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                            <i class="fas fa-download"></i>
+                                            下载
+                                        </button>
+                                        <button class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                            <i class="fas fa-eye"></i>
+                                            预览
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 报告3 -->
+                                <div class="report-item" style="display: flex; align-items: center; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 0.75rem; cursor: pointer; transition: all 0.3s ease;">
+                                    <div style="width: 50px; height: 50px; background: var(--secondary-gradient); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: white; margin-right: 1rem;">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 0.25rem;">风险评估与控制报告</div>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.25rem;">PDF • 1.8MB • 包含风险指标分析</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted);">2024-01-25 09:15 生成</div>
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                        <button class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                            <i class="fas fa-download"></i>
+                                            下载
+                                        </button>
+                                        <button class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                            <i class="fas fa-eye"></i>
+                                            预览
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 报告模板 -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">报告模板</h3>
+                                <button class="btn btn-primary" onclick="createTemplate()">
+                                    <i class="fas fa-plus"></i>
+                                    新建模板
+                                </button>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>标准模板</span>
+                                <span style="font-weight: 600;">6 个</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>自定义模板</span>
+                                <span style="font-weight: 600;">3 个</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>使用最多</span>
+                                <span style="font-weight: 600;">因子分析模板</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>上月生成</span>
+                                <span style="font-weight: 600;">12 份</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 报告统计 -->
+                <div class="stats-grid" style="margin-top: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--primary-gradient);">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-value">47</div>
+                        <div class="stat-label">历史报告总数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--success-gradient);">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">本月生成</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--secondary-gradient);">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="stat-value">89</div>
+                        <div class="stat-label">下载次数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--warning-gradient);">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-value">3.2分</div>
+                        <div class="stat-label">平均生成时间</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 系统设置页面 -->
+            <div id="settings-page" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">个人设置</h1>
+                    <p class="page-subtitle">系统配置和个性化设置</p>
+                </div>
+
+                <div class="content-grid">
+                    <!-- 用户信息设置 -->
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">用户信息</h3>
+                                <button class="btn btn-primary" onclick="saveUserInfo()">
+                                    <i class="fas fa-save"></i>
+                                    保存设置
+                                </button>
+                            </div>
+
+                            <div style="display: flex; align-items: center; margin-bottom: 2rem;">
+                                <div style="width: 80px; height: 80px; background: var(--primary-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: bold; margin-right: 1.5rem;">
+                                    U
+                                </div>
+                                <div style="flex: 1;">
+                                    <h4 style="margin: 0 0 0.5rem 0; font-size: 1.2rem;">量化研究员</h4>
+                                    <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">智能因子实验室 · 专业版用户</p>
+                                    <button class="btn btn-secondary" style="margin-top: 0.75rem; padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                        <i class="fas fa-camera"></i>
+                                        更换头像
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">用户名</label>
+                                    <input type="text" class="form-control" value="quant_researcher" placeholder="请输入用户名">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">邮箱地址</label>
+                                    <input type="email" class="form-control" value="user@example.com" placeholder="请输入邮箱">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">个人简介</label>
+                                <textarea class="form-control" rows="3" placeholder="介绍一下你的量化研究背景...">专注于AI驱动的量化策略研发，擅长因子挖掘和多策略组合优化。</textarea>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">所在地区</label>
+                                    <select class="form-control">
+                                        <option>中国大陆</option>
+                                        <option>香港</option>
+                                        <option>美国</option>
+                                        <option>新加坡</option>
+                                        <option>其他</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">时区设置</label>
+                                    <select class="form-control">
+                                        <option>UTC+8 (北京时间)</option>
+                                        <option>UTC+0 (格林威治标准时间)</option>
+                                        <option>UTC-5 (美国东部时间)</option>
+                                        <option>UTC-8 (美国太平洋时间)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 系统偏好设置 -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">系统偏好</h3>
+                            </div>
+
+                            <div style="margin-bottom: 2rem;">
+                                <label class="form-label">界面主题</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <label style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 2px solid var(--primary-gradient); border-radius: var(--radius-md); cursor: pointer; background: rgba(102, 126, 234, 0.05);">
+                                        <input type="radio" name="theme" value="light" checked>
+                                        <div>
+                                            <div style="font-weight: 600;">浅色主题</div>
+                                            <div style="font-size: 0.875rem; color: var(--text-muted);">清新明亮的界面风格</div>
+                                        </div>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer;">
+                                        <input type="radio" name="theme" value="dark">
+                                        <div>
+                                            <div style="font-weight: 600;">深色主题</div>
+                                            <div style="font-size: 0.875rem; color: var(--text-muted);">护眼的深色界面</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 2rem;">
+                                <label class="form-label">数据刷新频率</label>
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
+                                    <label style="display: flex; align-items: center; justify-content: center; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; text-align: center;">
+                                        <input type="radio" name="refresh-rate" value="1000" style="display: none;">
+                                        <span style="font-size: 0.875rem;">1秒</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; justify-content: center; padding: 0.75rem; border: 2px solid var(--primary-gradient); border-radius: var(--radius-md); cursor: pointer; text-align: center; background: rgba(102, 126, 234, 0.05);">
+                                        <input type="radio" name="refresh-rate" value="2000" checked style="display: none;">
+                                        <span style="font-size: 0.875rem;">2秒</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; justify-content: center; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; text-align: center;">
+                                        <input type="radio" name="refresh-rate" value="5000" style="display: none;">
+                                        <span style="font-size: 0.875rem;">5秒</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; justify-content: center; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; text-align: center;">
+                                        <input type="radio" name="refresh-rate" value="10000" style="display: none;">
+                                        <span style="font-size: 0.875rem;">10秒</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 2rem;">
+                                <label class="form-label">功能开关</label>
+                                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                                        <div>
+                                            <div style="font-weight: 500;">实时数据推送</div>
+                                            <div style="font-size: 0.875rem; color: var(--text-muted);">启用WebSocket实时数据流</div>
+                                        </div>
+                                        <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                            <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                                            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--primary-gradient); border-radius: 24px; transition: 0.3s;"></span>
+                                        </label>
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                                        <div>
+                                            <div style="font-weight: 500;">声音提醒</div>
+                                            <div style="font-size: 0.875rem; color: var(--text-muted);">重要事件的音频提醒</div>
+                                        </div>
+                                        <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                            <input type="checkbox" style="opacity: 0; width: 0; height: 0;">
+                                            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #ccc; border-radius: 24px; transition: 0.3s;"></span>
+                                        </label>
+                                    </div>
+
+                                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                                        <div>
+                                            <div style="font-weight: 500;">数据缓存</div>
+                                            <div style="font-size: 0.875rem; color: var(--text-muted);">本地缓存历史数据</div>
+                                        </div>
+                                        <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                            <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
+                                            <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--primary-gradient); border-radius: 24px; transition: 0.3s;"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- API配置和高级设置 -->
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">API配置</h3>
+                                <button class="btn btn-secondary" onclick="testApiConnection()">
+                                    <i class="fas fa-plug"></i>
+                                    测试连接
+                                </button>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">数据API地址</label>
+                                <input type="text" class="form-control" value="http://localhost:8002/api/v1" placeholder="API服务器地址">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">WebSocket地址</label>
+                                <input type="text" class="form-control" value="ws://localhost:8002/ws" placeholder="WebSocket服务器地址">
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">请求超时 (秒)</label>
+                                    <input type="number" class="form-control" value="30" min="5" max="300">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">重试次数</label>
+                                    <input type="number" class="form-control" value="3" min="1" max="10">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">API密钥</label>
+                                <div style="position: relative;">
+                                    <input type="password" class="form-control" value="sk-1234567890abcdef" placeholder="请输入API密钥">
+                                    <button type="button" style="position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer;">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI配置 -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">AI引擎配置</h3>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">默认AI引擎</label>
+                                <select class="form-control">
+                                    <option value="deepseek" selected>DeepSeek (推荐)</option>
+                                    <option value="gemini">Google Gemini</option>
+                                    <option value="claude">Anthropic Claude</option>
+                                    <option value="gpt">OpenAI GPT</option>
+                                </select>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">单次成本限制 ($)</label>
+                                    <input type="number" class="form-control" value="0.5" min="0.1" max="10" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">月度预算 ($)</label>
+                                    <input type="number" class="form-control" value="100" min="10" max="1000">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">生成参数</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                                    <div>
+                                        <label class="form-label" style="font-size: 0.875rem;">创造性</label>
+                                        <input type="range" min="0" max="100" value="70" style="width: 100%;">
+                                        <div style="text-align: center; font-size: 0.75rem; color: var(--text-muted);">70%</div>
+                                    </div>
+                                    <div>
+                                        <label class="form-label" style="font-size: 0.875rem;">准确性</label>
+                                        <input type="range" min="0" max="100" value="85" style="width: 100%;">
+                                        <div style="text-align: center; font-size: 0.75rem; color: var(--text-muted);">85%</div>
+                                    </div>
+                                    <div>
+                                        <label class="form-label" style="font-size: 0.875rem;">响应长度</label>
+                                        <input type="range" min="0" max="100" value="60" style="width: 100%;">
+                                        <div style="text-align: center; font-size: 0.75rem; color: var(--text-muted);">60%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 安全设置 -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">安全设置</h3>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>当前版本</span>
+                                <span style="font-weight: 600;">v2.1.0</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>最后登录</span>
+                                <span style="font-weight: 600;">今天 09:24</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                                <span>数据备份</span>
+                                <span style="font-weight: 600;">已启用</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 2rem;">
+                                <span>会话保持</span>
+                                <span style="font-weight: 600;">24小时</span>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-key"></i>
+                                    修改密码
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-download"></i>
+                                    导出设置
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-trash-alt"></i>
+                                    清空缓存
+                                </button>
+                                <button class="btn btn-secondary" style="color: #ef4444;" onclick="resetSettings()">
+                                    <i class="fas fa-undo"></i>
+                                    重置所有设置
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 系统信息 -->
+                <div class="stats-grid" style="margin-top: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--primary-gradient);">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="stat-value">99.8%</div>
+                        <div class="stat-label">系统可用率</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--success-gradient);">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="stat-value">2.4TB</div>
+                        <div class="stat-label">数据存储量</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--secondary-gradient);">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-value">47</div>
+                        <div class="stat-label">活跃因子数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--warning-gradient);">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-value">12天</div>
+                        <div class="stat-label">使用时长</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 加载覆盖层 -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div style="text-align: center;">
+            <div class="loading-spinner"></div>
+            <p style="margin-top: 1rem; color: var(--text-muted);">系统初始化中...</p>
+        </div>
+    </div>
+
+    <!-- 提示框容器 -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js"></script>
+    <script>
+        // 移动端菜单功能
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.mobile-overlay');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.mobile-overlay');
+            
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+
+        // 页面导航函数
+        function navigateToPage(pageName) {
+            if (window.modernDataAnalysisApp) {
+                window.modernDataAnalysisApp.navigateToPage(pageName);
+            }
+        }
+
+        // 因子相关功能
+        function previewFactor(factorId) {
+            if (window.modernDataAnalysisApp) {
+                window.modernDataAnalysisApp.previewFactor(factorId);
+            }
+        }
+
+        function backtestFactor(factorId) {
+            if (window.modernDataAnalysisApp) {
+                window.modernDataAnalysisApp.backtestFactor(factorId);
+            }
+        }
+
+        function saveFactorToLibrary(factorId) {
+            if (window.modernDataAnalysisApp) {
+                window.modernDataAnalysisApp.saveFactorToLibrary(factorId);
+            }
+        }
+
+        // 回测功能
+        function startBacktest(strategyConfig) {
+            if (window.modernDataAnalysisApp) {
+                window.modernDataAnalysisApp.startBacktest(strategyConfig);
+            }
+        }
+
+        // 报告功能
+        function generateReport(reportConfig) {
+            if (window.modernDataAnalysisApp) {
+                window.modernDataAnalysisApp.generateAnalysisReport(reportConfig);
+            }
+        }
+
+        function downloadReport(reportId) {
+            if (window.modernDataAnalysisApp) {
+                window.modernDataAnalysisApp.downloadReport(reportId);
+            }
+        }
+
+        function viewReport(reportId) {
+            if (window.modernDataAnalysisApp) {
+                window.modernDataAnalysisApp.viewReport(reportId);
+            }
+        }
+
+        // 因子详情
+        function viewFactorDetails(factorId) {
+            if (window.modernDataAnalysisApp) {
+                window.modernDataAnalysisApp.viewFactorDetails(factorId);
+            }
+        }
+
+        // 系统配置
+        function saveConfig() {
+            if (window.modernDataAnalysisApp) {
+                const config = {
+                    apiUrl: document.getElementById('api-url')?.value || window.modernDataAnalysisApp.config.apiUrl,
+                    wsUrl: document.getElementById('ws-url')?.value || window.modernDataAnalysisApp.config.wsUrl,
+                    updateInterval: parseInt(document.getElementById('update-interval')?.value) || window.modernDataAnalysisApp.config.updateInterval,
+                    maxDataPoints: parseInt(document.getElementById('max-data-points')?.value) || window.modernDataAnalysisApp.config.maxDataPoints,
+                    aiCostLimit: parseFloat(document.getElementById('ai-cost-limit')?.value) || window.modernDataAnalysisApp.config.aiCostLimit,
+                    dataRetentionDays: parseInt(document.getElementById('data-retention-days')?.value) || window.modernDataAnalysisApp.config.dataRetentionDays
+                };
+                
+                window.modernDataAnalysisApp.saveSystemConfig(config);
+            }
+        }
+
+        // 初始化视口高度变量
+        function setViewportHeight() {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            setViewportHeight();
+            
+            // 监听窗口大小变化
+            window.addEventListener('resize', setViewportHeight);
+            
+            // 移动端优化：阻止默认的触摸行为
+            document.addEventListener('touchstart', (e) => {
+                // 防止页面缩放
+                if (e.touches.length > 1) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            document.addEventListener('touchmove', (e) => {
+                // 防止页面滚动时的弹跳效果
+                if (e.touches.length > 1) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            // 为所有按钮添加触摸反馈
+            document.querySelectorAll('button, .btn, .nav-button').forEach(button => {
+                button.addEventListener('touchstart', (e) => {
+                    button.style.transform = 'scale(0.95)';
+                    button.style.transition = 'transform 0.1s ease';
+                }, { passive: true });
+
+                button.addEventListener('touchend', (e) => {
+                    setTimeout(() => {
+                        button.style.transform = '';
+                        button.style.transition = 'transform 0.2s ease';
+                    }, 100);
+                }, { passive: true });
+            });
+
+            console.log('✅ 响应式优化和移动端功能已加载');
+        });
+
+        // 监听方向改变
+        window.addEventListener('orientationchange', () => {
+            setTimeout(setViewportHeight, 200);
+        });
+    </script>
+</body>
+</html>

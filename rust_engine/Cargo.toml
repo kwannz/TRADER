@@ -1,0 +1,98 @@
+[package]
+name = "rust_engine"
+version = "1.0.0"
+edition = "2021"
+authors = ["Fullstack Engineer <dev@tradingsystem.ai>"]
+description = "高性能量化交易引擎 - Rust核心"
+
+[lib]
+name = "rust_engine"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# Python FFI绑定
+pyo3 = { version = "0.23", features = ["extension-module", "abi3-py310"] }
+
+# 异步运行时 (Tokio 1.47 LTS)
+tokio = { version = "1.47", features = ["full"] }
+tokio-tungstenite = "0.24"
+futures-util = "0.3"
+
+# 序列化/反序列化
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# HTTP客户端
+reqwest = { version = "0.12", features = ["json", "stream"] }
+
+# 数学计算和统计
+nalgebra = "0.33"
+statrs = "0.17"
+
+# 时间处理
+chrono = { version = "0.4", features = ["serde"] }
+
+# 错误处理
+thiserror = "1.0"
+anyhow = "1.0"
+
+# 并发处理
+rayon = "1.10"
+
+# 内存优化
+object-pool = "0.5"
+
+# 加密和安全
+sha2 = "0.10"
+hmac = "0.12"
+hex = "0.4"
+
+# 日志
+log = "0.4"
+env_logger = "0.11"
+
+# 配置管理
+config = "0.14"
+
+# MongoDB驱动
+mongodb = "3.1"
+
+# Redis驱动
+redis = { version = "0.27", features = ["tokio-comp", "connection-manager"] }
+
+# 数值计算优化
+num-traits = "0.2"
+num-complex = "0.4"
+
+# WebSocket
+tungstenite = "0.24"
+url = "2.5"
+
+# 性能监控
+prometheus = "0.13"
+
+[dev-dependencies]
+tokio-test = "0.4"
+criterion = "0.5"
+
+# Python模块名称
+[tool.pyo3]
+name = "rust_engine"
+
+[[bin]]
+name = "rust_engine_server"
+path = "src/main.rs"
+
+[[bench]]
+name = "data_processing"
+harness = false
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+opt-level = 3
+
+[profile.dev]
+opt-level = 0
+debug = true

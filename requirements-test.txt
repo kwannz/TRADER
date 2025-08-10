@@ -1,0 +1,62 @@
+# AI量化交易系统 - 测试环境依赖
+
+# ============ 核心测试框架 ============
+pytest>=7.4.0                 # 主要测试框架
+pytest-asyncio>=0.21.0        # 异步测试支持
+pytest-cov>=4.1.0            # 测试覆盖率
+pytest-mock>=3.11.0          # Mock支持
+pytest-xdist>=3.3.0          # 并行测试
+
+# ============ 覆盖率报告 ============
+coverage>=7.2.0              # 覆盖率计算
+coverage[toml]>=7.2.0        # TOML配置支持
+
+# ============ Web测试 ============
+aiohttp-test>=0.1.0          # aiohttp测试工具
+pytest-aiohttp>=1.0.4       # aiohttp异步测试
+requests>=2.31.0            # HTTP客户端测试
+
+# ============ Mock和Fixture ============
+responses>=0.23.0            # HTTP请求Mock
+freezegun>=1.2.2            # 时间Mock
+factory-boy>=3.3.0          # 测试数据工厂
+
+# ============ 性能测试 ============
+pytest-benchmark>=4.0.0     # 性能基准测试
+memory-profiler>=0.60.0     # 内存使用测试
+
+# ============ 报告生成 ============
+pytest-html>=3.2.0          # HTML测试报告
+pytest-json-report>=1.5.0   # JSON测试报告
+allure-pytest>=2.13.0       # Allure测试报告
+
+# ============ 代码质量 ============
+pytest-flake8>=1.1.1        # 代码风格检查
+pytest-mypy>=0.10.3         # 类型检查
+
+# ============ 测试数据 ============
+Faker>=19.3.0               # 假数据生成
+hypothesis>=6.82.0          # 基于属性的测试
+
+# ============ WebSocket测试 ============
+websockets>=11.0.3          # WebSocket客户端测试
+pytest-websockets>=0.1.0    # WebSocket测试支持
+
+# ============ JavaScript测试（Node.js工具） ============
+# 注意：这些需要Node.js环境
+# jest>=29.0.0               # JavaScript测试框架
+# puppeteer>=21.0.0          # 浏览器自动化测试
+
+# ============ 基础依赖（来自主项目） ============
+aiohttp>=3.9.0
+watchdog>=3.0.0
+ccxt>=4.1.0
+pandas>=2.1.0
+numpy>=1.25.0
+websockets>=12.0
+
+# ============ 可选增强测试工具 ============
+# pytest-sugar>=0.9.7       # 美化测试输出
+# pytest-clarity>=1.0.1     # 改进断言输出
+# pytest-timeout>=2.1.0     # 测试超时控制
+# pytest-env>=0.8.2         # 环境变量管理

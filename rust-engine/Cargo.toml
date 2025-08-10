@@ -1,0 +1,90 @@
+[package]
+name = "quant-engine"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "quant_engine"
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "quant-engine"
+path = "src/bin/main.rs"
+
+[dependencies]
+# 数值计算
+ndarray = "0.15"
+num-traits = "0.2"
+rayon = "1.7"
+
+# 序列化
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# 日期时间
+chrono = { version = "0.4", features = ["serde"] }
+
+# 异步处理
+tokio = { version = "1.0", features = ["full"] }
+async-trait = "0.1"
+
+# Python绑定
+pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
+numpy = { version = "0.20", optional = true }
+
+# 数据库连接
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid"] }
+
+# 错误处理
+anyhow = "1.0"
+thiserror = "1.0"
+
+# 日志
+log = "0.4"
+env_logger = "0.10"
+
+# 性能监控
+criterion = "0.5"
+
+# SIMD支持
+wide = { version = "0.7", optional = true }
+
+# 统计函数
+statrs = "0.16"
+
+# 配置
+config = "0.13"
+
+# UUID
+uuid = { version = "1.0", features = ["v4"] }
+
+# 命令行
+clap = "2.34"
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+approx = "0.5"
+tokio-test = "0.4"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[profile.bench]
+opt-level = 3
+debug = true
+
+[[bench]]
+name = "factor_benchmarks"
+harness = false
+
+# [[bench]]
+# name = "backtest_benchmarks" 
+# harness = false
+
+[features]
+default = ["simd"]
+simd = ["wide"]
+python-bindings = ["pyo3", "numpy"]

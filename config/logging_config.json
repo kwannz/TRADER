@@ -1,0 +1,314 @@
+{
+  "version": 1,
+  "logging": {
+    "level": "DEBUG",
+    "verbose": true,
+    "debug_mode": true,
+    "testing_mode": false,
+    "trace_execution": true,
+    "profile_performance": true,
+    "log_all_function_calls": true,
+    "log_variable_changes": false,
+    "console": {
+      "enabled": true,
+      "colorize": true,
+      "format": "console",
+      "level": "INFO"
+    },
+    "file": {
+      "enabled": true,
+      "directory": "logs",
+      "system_log": {
+        "filename": "system.log",
+        "max_bytes": 52428800,
+        "backup_count": 5,
+        "level": "TRACE",
+        "format": "verbose"
+      },
+      "debug_log": {
+        "filename": "debug.log",
+        "max_bytes": 104857600,
+        "backup_count": 10,
+        "level": "TRACE",
+        "format": "debug",
+        "category": "debug"
+      },
+      "trace_log": {
+        "filename": "trace.log",
+        "max_bytes": 104857600,
+        "backup_count": 5,
+        "level": "TRACE",
+        "format": "trace",
+        "category": "trace"
+      },
+      "execution_log": {
+        "filename": "execution_trace.log",
+        "max_bytes": 52428800,
+        "backup_count": 3,
+        "level": "TRACE",
+        "format": "execution",
+        "category": "execution"
+      },
+      "error_log": {
+        "filename": "errors.log",
+        "max_bytes": 10485760,
+        "backup_count": 10,
+        "level": "ERROR",
+        "format": "text"
+      },
+      "trading_log": {
+        "filename": "trading.log",
+        "max_bytes": 20971520,
+        "backup_count": 5,
+        "level": "INFO",
+        "format": "text",
+        "category": "trading"
+      },
+      "api_log": {
+        "filename": "api.log",
+        "max_bytes": 20971520,
+        "backup_count": 3,
+        "level": "INFO",
+        "format": "text",
+        "category": "api"
+      },
+      "ai_log": {
+        "filename": "ai.log",
+        "max_bytes": 20971520,
+        "backup_count": 3,
+        "level": "DEBUG",
+        "format": "text",
+        "category": "ai"
+      },
+      "performance_log": {
+        "filename": "performance.log",
+        "max_bytes": 10485760,
+        "backup_count": 3,
+        "level": "INFO",
+        "format": "text",
+        "category": "performance"
+      }
+    },
+    "json_file": {
+      "enabled": true,
+      "directory": "logs",
+      "structured_log": {
+        "filename": "system_structured.jsonl",
+        "max_bytes": 52428800,
+        "backup_count": 5,
+        "level": "DEBUG"
+      },
+      "trading_structured": {
+        "filename": "trading_structured.jsonl",
+        "max_bytes": 20971520,
+        "backup_count": 3,
+        "level": "DEBUG",
+        "category": "trading"
+      },
+      "debug_structured": {
+        "filename": "debug_structured.jsonl",
+        "max_bytes": 104857600,
+        "backup_count": 5,
+        "level": "TRACE",
+        "category": "debug"
+      },
+      "performance_structured": {
+        "filename": "performance_structured.jsonl",
+        "max_bytes": 52428800,
+        "backup_count": 3,
+        "level": "DEBUG",
+        "category": "performance"
+      }
+    },
+    "database": {
+      "enabled": false,
+      "mongodb": {
+        "url": "${MONGODB_URL}",
+        "database": "trader_logs",
+        "collection": "logs",
+        "ttl_days": 30
+      },
+      "redis": {
+        "url": "${REDIS_URL}",
+        "stats_key_prefix": "log_stats"
+      }
+    },
+    "filters": {
+      "performance": {
+        "categories": ["performance"],
+        "min_level": "INFO"
+      },
+      "errors_only": {
+        "min_level": "ERROR"
+      },
+      "trading_only": {
+        "categories": ["trading"],
+        "min_level": "DEBUG"
+      },
+      "system_only": {
+        "categories": ["system"],
+        "min_level": "INFO"
+      }
+    },
+    "categories": {
+      "system": {
+        "description": "系统级别日志",
+        "default_level": "INFO"
+      },
+      "api": {
+        "description": "API请求和响应日志",
+        "default_level": "INFO"
+      },
+      "trading": {
+        "description": "交易相关日志",
+        "default_level": "INFO"
+      },
+      "ai": {
+        "description": "AI引擎日志",
+        "default_level": "DEBUG"
+      },
+      "database": {
+        "description": "数据库操作日志",
+        "default_level": "INFO"
+      },
+      "network": {
+        "description": "网络请求日志",
+        "default_level": "WARNING"
+      },
+      "security": {
+        "description": "安全相关日志",
+        "default_level": "WARNING"
+      },
+      "performance": {
+        "description": "性能监控日志",
+        "default_level": "INFO"
+      },
+      "user": {
+        "description": "用户操作日志",
+        "default_level": "INFO"
+      },
+      "workflow": {
+        "description": "工作流日志",
+        "default_level": "INFO"
+      },
+      "coinglass": {
+        "description": "Coinglass数据收集日志",
+        "default_level": "INFO"
+      },
+      "backtest": {
+        "description": "回测系统日志",
+        "default_level": "INFO"
+      },
+      "strategy": {
+        "description": "策略执行日志",
+        "default_level": "INFO"
+      },
+      "risk": {
+        "description": "风险管理日志",
+        "default_level": "WARNING"
+      },
+      "monitoring": {
+        "description": "系统监控日志",
+        "default_level": "INFO"
+      },
+      "debug": {
+        "description": "调试模式日志",
+        "default_level": "TRACE"
+      },
+      "trace": {
+        "description": "执行跟踪日志",
+        "default_level": "TRACE"
+      },
+      "execution": {
+        "description": "函数执行日志",
+        "default_level": "TRACE"
+      },
+      "testing": {
+        "description": "测试专用日志",
+        "default_level": "DEBUG"
+      },
+      "profiling": {
+        "description": "性能分析日志",
+        "default_level": "DEBUG"
+      }
+    }
+  },
+  "alerts": {
+    "enabled": true,
+    "error_threshold": {
+      "count": 10,
+      "window_minutes": 5
+    },
+    "critical_threshold": {
+      "count": 1,
+      "window_minutes": 1
+    },
+    "memory_threshold_mb": 1024,
+    "performance_threshold_ms": 5000
+  },
+  "retention": {
+    "log_files": {
+      "days": 30
+    },
+    "database": {
+      "days": 90
+    },
+    "memory_buffer": {
+      "max_entries": 10000
+    }
+  },
+  "features": {
+    "structured_logging": true,
+    "performance_monitoring": true,
+    "error_tracking": true,
+    "user_tracking": true,
+    "correlation_ids": true,
+    "stack_traces": true,
+    "metadata_enrichment": true,
+    "async_logging": true,
+    "compression": true,
+    "verbose_logging": true,
+    "debug_logging": true,
+    "trace_logging": true,
+    "execution_tracing": true,
+    "function_profiling": true,
+    "memory_profiling": true,
+    "variable_tracking": false,
+    "call_graph_logging": true,
+    "timing_analysis": true,
+    "resource_monitoring": true
+  },
+  "verbose_settings": {
+    "log_entry_exit": true,
+    "log_parameters": true,
+    "log_return_values": true,
+    "log_exceptions_detailed": true,
+    "log_memory_usage": true,
+    "log_execution_time": true,
+    "log_thread_info": true,
+    "log_process_info": true,
+    "log_call_stack": true,
+    "max_parameter_length": 500,
+    "max_return_value_length": 500,
+    "sensitive_data_masking": true,
+    "mask_patterns": ["password", "token", "key", "secret", "api_key"]
+  },
+  "debug_settings": {
+    "trace_all_modules": false,
+    "trace_specific_modules": ["core", "trading", "ai_engine", "strategy"],
+    "exclude_modules": ["urllib", "requests", "asyncio", "logging"],
+    "debug_breakpoints": false,
+    "interactive_debugging": false,
+    "code_coverage_tracking": true,
+    "execution_flow_tracking": true
+  },
+  "testing_settings": {
+    "test_log_level": "TRACE",
+    "log_test_execution": true,
+    "log_assertions": true,
+    "log_test_data": true,
+    "log_setup_teardown": true,
+    "capture_test_output": true,
+    "test_timing": true
+  }
+}

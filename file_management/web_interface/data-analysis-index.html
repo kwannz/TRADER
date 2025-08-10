@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI量化数据分析与因子研究平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="animations.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <div class="logo">
+                    <span class="logo-icon">📊</span>
+                    <h1>AI量化数据分析平台</h1>
+                    <span class="version">v2.0</span>
+                </div>
+            </div>
+            
+            <nav class="navbar-center">
+                <button class="nav-btn active" data-page="data-overview">
+                    <i data-lucide="bar-chart-3"></i>
+                    <span>数据概览</span>
+                </button>
+                <button class="nav-btn" data-page="factor-research">
+                    <i data-lucide="search"></i>
+                    <span>因子研究</span>
+                </button>
+                <button class="nav-btn" data-page="factor-generation">
+                    <i data-lucide="brain"></i>
+                    <span>AI因子生成</span>
+                </button>
+                <button class="nav-btn" data-page="backtest-lab">
+                    <i data-lucide="trending-up"></i>
+                    <span>回测实验室</span>
+                </button>
+                <button class="nav-btn" data-page="factor-library">
+                    <i data-lucide="database"></i>
+                    <span>因子库</span>
+                </button>
+                <button class="nav-btn" data-page="data-sources">
+                    <i data-lucide="server"></i>
+                    <span>数据源</span>
+                </button>
+                <button class="nav-btn" data-page="analysis-reports">
+                    <i data-lucide="file-text"></i>
+                    <span>分析报告</span>
+                </button>
+                <button class="nav-btn" data-page="system-config">
+                    <i data-lucide="settings"></i>
+                    <span>系统配置</span>
+                </button>
+            </nav>
+            
+            <div class="navbar-right">
+                <div class="data-status">
+                    <span class="status-indicator online" id="data-connection-status"></span>
+                    <span class="status-text">数据连接正常</span>
+                </div>
+                <div class="current-time" id="current-time">15:30:25</div>
+                <button class="profile-btn">
+                    <i data-lucide="user"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <!-- 数据概览页面 -->
+            <div class="page active" id="data-overview-page">
+                <div class="page-header">
+                    <h2>数据概览</h2>
+                    <div class="page-actions">
+                        <select class="form-select">
+                            <option>最近24小时</option>
+                            <option>最近7天</option>
+                            <option>最近30天</option>
+                        </select>
+                        <button class="btn btn-primary">
+                            <i data-lucide="refresh-cw"></i>
+                            刷新数据
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overview-grid">
+                    <!-- 数据源状态 -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3><i data-lucide="database"></i>数据源状态</h3>
+                        </div>
+                        <div class="widget-content">
+                            <div class="data-sources-status">
+                                <div class="data-source-item">
+                                    <div class="source-info">
+                                        <div class="source-name">币安数据源</div>
+                                        <div class="source-details">更新时间: 2分钟前</div>
+                                    </div>
+                                    <div class="source-metrics">
+                                        <span class="metric-label">延迟</span>
+                                        <span class="metric-value">120ms</span>
+                                    </div>
+                                    <div class="source-status">
+                                        <span class="status-indicator online"></span>
+                                        <span>正常</span>
+                                    </div>
+                                </div>
+                                <div class="data-source-item">
+                                    <div class="source-info">
+                                        <div class="source-name">OKX数据源</div>
+                                        <div class="source-details">更新时间: 1分钟前</div>
+                                    </div>
+                                    <div class="source-metrics">
+                                        <span class="metric-label">延迟</span>
+                                        <span class="metric-value">95ms</span>
+                                    </div>
+                                    <div class="source-status">
+                                        <span class="status-indicator online"></span>
+                                        <span>正常</span>
+                                    </div>
+                                </div>
+                                <div class="data-source-item">
+                                    <div class="source-info">
+                                        <div class="source-name">Coinglass情绪数据</div>
+                                        <div class="source-details">更新时间: 5分钟前</div>
+                                    </div>
+                                    <div class="source-metrics">
+                                        <span class="metric-label">延迟</span>
+                                        <span class="metric-value">1.2s</span>
+                                    </div>
+                                    <div class="source-status">
+                                        <span class="status-indicator warning"></span>
+                                        <span>延迟</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 数据统计概览 -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3><i data-lucide="activity"></i>数据统计</h3>
+                        </div>
+                        <div class="widget-content">
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-icon">📊</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="total-symbols">1,247</div>
+                                        <div class="stat-label">交易品种</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">📈</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="total-datapoints">2.4M</div>
+                                        <div class="stat-label">数据点</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">🧮</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="active-factors">156</div>
+                                        <div class="stat-label">活跃因子</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">⚡</div>
+                                    <div class="stat-content">
+                                        <div class="stat-value" id="update-frequency">2.3Hz</div>
+                                        <div class="stat-label">更新频率</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 实时数据流 -->
+                    <div class="widget data-stream">
+                        <div class="widget-header">
+                            <h3><i data-lucide="radio"></i>实时数据流</h3>
+                            <div class="stream-controls">
+                                <button class="btn btn-secondary small">
+                                    <i data-lucide="pause"></i>
+                                    暂停
+                                </button>
+                                <select class="form-select small">
+                                    <option>全部数据</option>
+                                    <option>价格数据</option>
+                                    <option>成交量数据</option>
+                                    <option>情绪数据</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="widget-content">
+                            <div class="data-stream-container" id="data-stream">
+                                <!-- 实时数据流将在此显示 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 市场热力图 -->
+                    <div class="widget market-heatmap">
+                        <div class="widget-header">
+                            <h3><i data-lucide="map"></i>市场热力图</h3>
+                            <div class="heatmap-controls">
+                                <select class="form-select small">
+                                    <option>24h变化</option>
+                                    <option>成交量</option>
+                                    <option>波动率</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="widget-content">
+                            <div class="heatmap-container">
+                                <div id="market-heatmap"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI分析状态 -->
+                    <div class="widget ai-status">
+                        <div class="widget-header">
+                            <h3><i data-lucide="brain"></i>AI分析状态</h3>
+                        </div>
+                        <div class="widget-content">
+                            <div class="ai-engines-status">
+                                <div class="engine-status">
+                                    <div class="engine-info">
+                                        <div class="engine-name">DeepSeek因子生成</div>
+                                        <div class="engine-model">deepseek-chat</div>
+                                    </div>
+                                    <div class="engine-metrics">
+                                        <div class="metric-item">
+                                            <span class="metric-label">今日调用</span>
+                                            <span class="metric-value">1,247</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">响应时间</span>
+                                            <span class="metric-value">1.2s</span>
+                                        </div>
+                                    </div>
+                                    <div class="engine-status-indicator">
+                                        <span class="status-indicator online"></span>
+                                        <span>运行中</span>
+                                    </div>
+                                </div>
+                                <div class="engine-status">
+                                    <div class="engine-info">
+                                        <div class="engine-name">Gemini数据分析</div>
+                                        <div class="engine-model">gemini-pro</div>
+                                    </div>
+                                    <div class="engine-metrics">
+                                        <div class="metric-item">
+                                            <span class="metric-label">今日调用</span>
+                                            <span class="metric-value">856</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">响应时间</span>
+                                            <span class="metric-value">2.1s</span>
+                                        </div>
+                                    </div>
+                                    <div class="engine-status-indicator">
+                                        <span class="status-indicator online"></span>
+                                        <span>运行中</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 数据质量监控 -->
+                    <div class="widget data-quality">
+                        <div class="widget-header">
+                            <h3><i data-lucide="check-circle"></i>数据质量监控</h3>
+                        </div>
+                        <div class="widget-content">
+                            <div class="quality-metrics">
+                                <div class="quality-item">
+                                    <div class="quality-label">数据完整性</div>
+                                    <div class="quality-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 98.5%"></div>
+                                        </div>
+                                        <span class="progress-text">98.5%</span>
+                                    </div>
+                                </div>
+                                <div class="quality-item">
+                                    <div class="quality-label">数据准确性</div>
+                                    <div class="quality-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 99.2%"></div>
+                                        </div>
+                                        <span class="progress-text">99.2%</span>
+                                    </div>
+                                </div>
+                                <div class="quality-item">
+                                    <div class="quality-label">数据及时性</div>
+                                    <div class="quality-progress">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 96.8%"></div>
+                                        </div>
+                                        <span class="progress-text">96.8%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 因子研究页面 -->
+            <div class="page" id="factor-research-page">
+                <div class="page-header">
+                    <h2>因子研究</h2>
+                    <div class="page-actions">
+                        <button class="btn btn-primary">
+                            <i data-lucide="plus"></i>
+                            新建研究项目
+                        </button>
+                    </div>
+                </div>
+
+                <div class="research-container">
+                    <!-- 研究项目列表 -->
+                    <div class="research-sidebar">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3><i data-lucide="folder"></i>研究项目</h3>
+                            </div>
+                            <div class="widget-content">
+                                <div class="project-list">
+                                    <div class="project-item active">
+                                        <div class="project-name">技术指标因子研究</div>
+                                        <div class="project-meta">创建于 2024-01-27</div>
+                                    </div>
+                                    <div class="project-item">
+                                        <div class="project-name">情绪指标分析</div>
+                                        <div class="project-meta">创建于 2024-01-26</div>
+                                    </div>
+                                    <div class="project-item">
+                                        <div class="project-name">宏观经济因子</div>
+                                        <div class="project-meta">创建于 2024-01-25</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 研究主要内容 -->
+                    <div class="research-main">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3><i data-lucide="bar-chart"></i>技术指标因子研究</h3>
+                                <div class="widget-actions">
+                                    <button class="btn btn-secondary small">
+                                        <i data-lucide="save"></i>
+                                        保存
+                                    </button>
+                                    <button class="btn btn-primary small">
+                                        <i data-lucide="play"></i>
+                                        运行分析
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="research-workspace">
+                                    <!-- 因子配置区域 -->
+                                    <div class="factor-config">
+                                        <h4>因子配置</h4>
+                                        <div class="config-grid">
+                                            <div class="form-group">
+                                                <label>基础数据源</label>
+                                                <select class="form-select">
+                                                    <option>OHLCV价格数据</option>
+                                                    <option>订单簿数据</option>
+                                                    <option>资金流向数据</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>时间窗口</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-input" value="20" min="1">
+                                                    <select class="form-select">
+                                                        <option>天</option>
+                                                        <option>小时</option>
+                                                        <option>分钟</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>交易品种</label>
+                                                <div class="symbol-selector">
+                                                    <div class="selected-symbols">
+                                                        <span class="symbol-tag">BTC-USDT <i data-lucide="x"></i></span>
+                                                        <span class="symbol-tag">ETH-USDT <i data-lucide="x"></i></span>
+                                                    </div>
+                                                    <button class="btn btn-secondary small">
+                                                        <i data-lucide="plus"></i>
+                                                        添加品种
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 因子公式编辑器 -->
+                                    <div class="factor-formula">
+                                        <h4>因子公式</h4>
+                                        <div class="formula-editor">
+                                            <textarea class="formula-input" placeholder="输入因子计算公式...
+例如: (close - sma(close, 20)) / sma(close, 20)">
+(close - sma(close, 20)) / sma(close, 20)
+                                            </textarea>
+                                            <div class="formula-tools">
+                                                <button class="btn btn-secondary small">验证语法</button>
+                                                <button class="btn btn-secondary small">插入函数</button>
+                                                <button class="btn btn-secondary small">预览结果</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 因子预览图表 -->
+                                    <div class="factor-preview">
+                                        <h4>因子预览</h4>
+                                        <div class="preview-chart">
+                                            <canvas id="factor-preview-chart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI因子生成页面 -->
+            <div class="page" id="factor-generation-page">
+                <div class="page-header">
+                    <h2>AI因子生成</h2>
+                    <div class="page-actions">
+                        <div class="ai-cost-display">
+                            <span class="cost-label">本月消耗:</span>
+                            <span class="cost-value">$23.45</span>
+                            <span class="cost-budget">/ $100</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="generation-container">
+                    <!-- AI生成控制面板 -->
+                    <div class="generation-controls">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3><i data-lucide="brain"></i>AI生成控制</h3>
+                            </div>
+                            <div class="widget-content">
+                                <div class="ai-prompt-section">
+                                    <label>生成提示词</label>
+                                    <textarea class="ai-prompt-input" placeholder="请描述您希望生成的因子类型和特征...
+
+例如: 基于技术指标和价格动量生成一个能够预测短期价格方向的因子，考虑过去20个交易日的价格变化趋势和成交量特征。">
+                                    </textarea>
+                                </div>
+                                
+                                <div class="generation-params">
+                                    <div class="param-group">
+                                        <label>AI引擎选择</label>
+                                        <div class="engine-selector">
+                                            <label class="radio-item">
+                                                <input type="radio" name="ai-engine" value="deepseek" checked>
+                                                <span class="radio-mark"></span>
+                                                <span>DeepSeek (创新能力强)</span>
+                                            </label>
+                                            <label class="radio-item">
+                                                <input type="radio" name="ai-engine" value="gemini">
+                                                <span class="radio-mark"></span>
+                                                <span>Gemini (逻辑严密)</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="param-group">
+                                        <label>生成数量</label>
+                                        <div class="slider-group">
+                                            <input type="range" class="form-slider" min="1" max="10" value="3" id="generation-count">
+                                            <span class="slider-value">3个因子</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="param-group">
+                                        <label>复杂度等级</label>
+                                        <select class="form-select">
+                                            <option>简单 (基础指标组合)</option>
+                                            <option selected>中等 (多层次计算)</option>
+                                            <option>复杂 (高级数学模型)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary full-width" onclick="startAIGeneration()">
+                                    <i data-lucide="zap"></i>
+                                    开始AI因子生成
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 生成历史 -->
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3><i data-lucide="history"></i>生成历史</h3>
+                            </div>
+                            <div class="widget-content">
+                                <div class="generation-history">
+                                    <div class="history-item">
+                                        <div class="history-time">2024-01-27 15:30</div>
+                                        <div class="history-desc">技术指标动量因子 (3个)</div>
+                                        <div class="history-status success">已完成</div>
+                                    </div>
+                                    <div class="history-item">
+                                        <div class="history-time">2024-01-27 14:15</div>
+                                        <div class="history-desc">情绪驱动因子 (2个)</div>
+                                        <div class="history-status success">已完成</div>
+                                    </div>
+                                    <div class="history-item">
+                                        <div class="history-time">2024-01-27 13:45</div>
+                                        <div class="history-desc">跨品种套利因子 (5个)</div>
+                                        <div class="history-status processing">生成中</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI生成结果 -->
+                    <div class="generation-results">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3><i data-lucide="lightbulb"></i>AI生成结果</h3>
+                                <div class="widget-actions">
+                                    <button class="btn btn-secondary small">
+                                        <i data-lucide="download"></i>
+                                        导出全部
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="generated-factors" id="generated-factors">
+                                    <div class="factor-card">
+                                        <div class="factor-header">
+                                            <div class="factor-name">动量反转因子 #1</div>
+                                            <div class="factor-score">
+                                                <span class="score-label">AI评分</span>
+                                                <span class="score-value">8.7</span>
+                                            </div>
+                                        </div>
+                                        <div class="factor-content">
+                                            <div class="factor-formula">
+                                                <code>
+                                                    momentum_20 = (close / sma(close, 20) - 1) * 100<br>
+                                                    rsi_14 = rsi(close, 14)<br>
+                                                    factor = momentum_20 * (50 - rsi_14) / 50
+                                                </code>
+                                            </div>
+                                            <div class="factor-description">
+                                                <p>基于20日动量和RSI指标构建的反转因子，当动量过强时产生反转信号。</p>
+                                            </div>
+                                        </div>
+                                        <div class="factor-actions">
+                                            <button class="btn btn-secondary small">
+                                                <i data-lucide="bar-chart"></i>
+                                                预览
+                                            </button>
+                                            <button class="btn btn-secondary small">
+                                                <i data-lucide="play"></i>
+                                                回测
+                                            </button>
+                                            <button class="btn btn-primary small">
+                                                <i data-lucide="save"></i>
+                                                保存到因子库
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="factor-card">
+                                        <div class="factor-header">
+                                            <div class="factor-name">波动率突破因子 #2</div>
+                                            <div class="factor-score">
+                                                <span class="score-label">AI评分</span>
+                                                <span class="score-value">7.9</span>
+                                            </div>
+                                        </div>
+                                        <div class="factor-content">
+                                            <div class="factor-formula">
+                                                <code>
+                                                    volatility = std(returns, 10)<br>
+                                                    vol_threshold = sma(volatility, 20) * 1.5<br>
+                                                    factor = (volatility > vol_threshold) * sign(returns)
+                                                </code>
+                                            </div>
+                                            <div class="factor-description">
+                                                <p>检测波动率异常突破的因子，在高波动环境下捕捉趋势延续信号。</p>
+                                            </div>
+                                        </div>
+                                        <div class="factor-actions">
+                                            <button class="btn btn-secondary small">
+                                                <i data-lucide="bar-chart"></i>
+                                                预览
+                                            </button>
+                                            <button class="btn btn-secondary small">
+                                                <i data-lucide="play"></i>
+                                                回测
+                                            </button>
+                                            <button class="btn btn-primary small">
+                                                <i data-lucide="save"></i>
+                                                保存到因子库
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- AI生成中的占位符 -->
+                                    <div class="factor-card generating">
+                                        <div class="generating-indicator">
+                                            <div class="loading-spinner"></div>
+                                            <div class="generating-text">AI正在生成第3个因子...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 回测实验室页面 -->
+            <div class="page" id="backtest-lab-page">
+                <div class="page-header">
+                    <h2>回测实验室</h2>
+                    <div class="page-actions">
+                        <button class="btn btn-primary">
+                            <i data-lucide="plus"></i>
+                            新建回测实验
+                        </button>
+                    </div>
+                </div>
+
+                <div class="backtest-container">
+                    <div class="backtest-config">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3><i data-lucide="settings"></i>回测配置</h3>
+                            </div>
+                            <div class="widget-content">
+                                <div class="config-sections">
+                                    <div class="config-section">
+                                        <h4>基础设置</h4>
+                                        <div class="form-group">
+                                            <label>回测名称</label>
+                                            <input type="text" class="form-input" placeholder="输入回测实验名称">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>时间范围</label>
+                                            <div class="date-range">
+                                                <input type="date" class="form-input" value="2024-01-01">
+                                                <span>至</span>
+                                                <input type="date" class="form-input" value="2024-01-27">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>数据频率</label>
+                                            <select class="form-select">
+                                                <option>日线</option>
+                                                <option>4小时</option>
+                                                <option>1小时</option>
+                                                <option>15分钟</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="config-section">
+                                        <h4>因子选择</h4>
+                                        <div class="factor-selection">
+                                            <div class="selected-factors">
+                                                <div class="factor-tag">
+                                                    动量反转因子 #1
+                                                    <button class="remove-factor"><i data-lucide="x"></i></button>
+                                                </div>
+                                                <div class="factor-tag">
+                                                    波动率突破因子 #2
+                                                    <button class="remove-factor"><i data-lucide="x"></i></button>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-secondary">
+                                                <i data-lucide="plus"></i>
+                                                从因子库选择
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="config-section">
+                                        <h4>交易成本</h4>
+                                        <div class="form-group">
+                                            <label>手续费率 (%)</label>
+                                            <input type="number" class="form-input" value="0.1" step="0.01">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>滑点 (基点)</label>
+                                            <input type="number" class="form-input" value="2" step="0.1">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary full-width">
+                                    <i data-lucide="play"></i>
+                                    开始回测
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="backtest-results">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3><i data-lucide="trending-up"></i>回测结果</h3>
+                                <div class="widget-actions">
+                                    <select class="form-select small">
+                                        <option>最新实验</option>
+                                        <option>动量策略回测_20240127</option>
+                                        <option>多因子组合_20240126</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="backtest-summary">
+                                    <div class="summary-metrics">
+                                        <div class="metric-card">
+                                            <div class="metric-label">总收益率</div>
+                                            <div class="metric-value positive">+23.45%</div>
+                                        </div>
+                                        <div class="metric-card">
+                                            <div class="metric-label">年化收益率</div>
+                                            <div class="metric-value positive">+45.2%</div>
+                                        </div>
+                                        <div class="metric-card">
+                                            <div class="metric-label">最大回撤</div>
+                                            <div class="metric-value negative">-8.3%</div>
+                                        </div>
+                                        <div class="metric-card">
+                                            <div class="metric-label">夏普比率</div>
+                                            <div class="metric-value">1.85</div>
+                                        </div>
+                                        <div class="metric-card">
+                                            <div class="metric-label">胜率</div>
+                                            <div class="metric-value">67.8%</div>
+                                        </div>
+                                        <div class="metric-card">
+                                            <div class="metric-label">信息比率</div>
+                                            <div class="metric-value">1.23</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="backtest-chart">
+                                    <canvas id="backtest-performance-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 因子库页面 -->
+            <div class="page" id="factor-library-page">
+                <div class="page-header">
+                    <h2>因子库</h2>
+                    <div class="page-actions">
+                        <div class="search-box">
+                            <input type="text" class="search-input" placeholder="搜索因子...">
+                            <button class="search-btn">
+                                <i data-lucide="search"></i>
+                            </button>
+                        </div>
+                        <button class="btn btn-primary">
+                            <i data-lucide="upload"></i>
+                            导入因子
+                        </button>
+                    </div>
+                </div>
+
+                <div class="library-container">
+                    <!-- 因子分类和筛选 -->
+                    <div class="library-sidebar">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3><i data-lucide="filter"></i>因子筛选</h3>
+                            </div>
+                            <div class="widget-content">
+                                <div class="filter-groups">
+                                    <div class="filter-group">
+                                        <h4>因子分类</h4>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" checked>
+                                            <span class="checkmark"></span>
+                                            技术指标 (156)
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" checked>
+                                            <span class="checkmark"></span>
+                                            价格动量 (89)
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox">
+                                            <span class="checkmark"></span>
+                                            成交量 (67)
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox">
+                                            <span class="checkmark"></span>
+                                            情绪指标 (43)
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox">
+                                            <span class="checkmark"></span>
+                                            基本面 (25)
+                                        </label>
+                                    </div>
+
+                                    <div class="filter-group">
+                                        <h4>IC范围</h4>
+                                        <div class="range-slider">
+                                            <input type="range" min="0" max="1" step="0.01" value="0.02">
+                                            <div class="range-labels">
+                                                <span>0.02</span>
+                                                <span>1.0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="filter-group">
+                                        <h4>创建来源</h4>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" checked>
+                                            <span class="checkmark"></span>
+                                            AI生成
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" checked>
+                                            <span class="checkmark"></span>
+                                            手动创建
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox">
+                                            <span class="checkmark"></span>
+                                            导入因子
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 因子列表 -->
+                    <div class="library-main">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3><i data-lucide="database"></i>因子列表</h3>
+                                <div class="widget-actions">
+                                    <select class="form-select small">
+                                        <option>按IC排序</option>
+                                        <option>按创建时间排序</option>
+                                        <option>按使用频次排序</option>
+                                    </select>
+                                    <button class="btn btn-secondary small">
+                                        <i data-lucide="grid"></i>
+                                    </button>
+                                    <button class="btn btn-secondary small">
+                                        <i data-lucide="list"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="widget-content">
+                                <div class="factor-library-grid">
+                                    <div class="factor-library-item">
+                                        <div class="factor-item-header">
+                                            <div class="factor-name">RSI动量因子</div>
+                                            <div class="factor-category">技术指标</div>
+                                        </div>
+                                        <div class="factor-metrics">
+                                            <div class="metric">
+                                                <span class="metric-label">IC</span>
+                                                <span class="metric-value">0.156</span>
+                                            </div>
+                                            <div class="metric">
+                                                <span class="metric-label">ICIR</span>
+                                                <span class="metric-value">1.23</span>
+                                            </div>
+                                            <div class="metric">
+                                                <span class="metric-label">胜率</span>
+                                                <span class="metric-value">64.2%</span>
+                                            </div>
+                                        </div>
+                                        <div class="factor-description">
+                                            基于RSI指标构建的动量因子，适用于中短期趋势预测
+                                        </div>
+                                        <div class="factor-meta">
+                                            <span class="creation-source ai">AI生成</span>
+                                            <span class="creation-date">2024-01-27</span>
+                                            <span class="usage-count">使用 15 次</span>
+                                        </div>
+                                        <div class="factor-actions">
+                                            <button class="btn btn-secondary small">
+                                                <i data-lucide="eye"></i>
+                                                查看详情
+                                            </button>
+                                            <button class="btn btn-secondary small">
+                                                <i data-lucide="play"></i>
+                                                快速回测
+                                            </button>
+                                            <button class="btn btn-secondary small">
+                                                <i data-lucide="copy"></i>
+                                                复制
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="factor-library-item">
+                                        <div class="factor-item-header">
+                                            <div class="factor-name">成交量价格背离因子</div>
+                                            <div class="factor-category">成交量</div>
+                                        </div>
+                                        <div class="factor-metrics">
+                                            <div class="metric">
+                                                <span class="metric-label">IC</span>
+                                                <span class="metric-value">0.132</span>
+                                            </div>
+                                            <div class="metric">
+                                                <span class="metric-label">ICIR</span>
+                                                <span class="metric-value">0.98</span>
+                                            </div>
+                                            <div class="metric">
+                                                <span class="metric-label">胜率</span>
+                                                <span class="metric-value">61.7%</span>
+                                            </div>
+                                        </div>
+                                        <div class="factor-description">
+                                            检测价格与成交量背离的反转信号因子
+                                        </div>
+                                        <div class="factor-meta">
+                                            <span class="creation-source manual">手动创建</span>
+                                            <span class="creation-date">2024-01-26</span>
+                                            <span class="usage-count">使用 8 次</span>
+                                        </div>
+                                        <div class="factor-actions">
+                                            <button class="btn btn-secondary small">
+                                                <i data-lucide="eye"></i>
+                                                查看详情
+                                            </button>
+                                            <button class="btn btn-secondary small">
+                                                <i data-lucide="play"></i>
+                                                快速回测
+                                            </button>
+                                            <button class="btn btn-secondary small">
+                                                <i data-lucide="copy"></i>
+                                                复制
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- 更多因子项目... -->
+                                </div>
+                                
+                                <div class="pagination">
+                                    <button class="btn btn-secondary small">上一页</button>
+                                    <span class="page-info">第 1 页 / 共 12 页</span>
+                                    <button class="btn btn-secondary small">下一页</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 数据源页面 -->
+            <div class="page" id="data-sources-page">
+                <div class="page-header">
+                    <h2>数据源管理</h2>
+                    <div class="page-actions">
+                        <button class="btn btn-primary">
+                            <i data-lucide="plus"></i>
+                            添加数据源
+                        </button>
+                    </div>
+                </div>
+
+                <div class="data-sources-container">
+                    <!-- 数据源列表 -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3><i data-lucide="server"></i>数据源列表</h3>
+                        </div>
+                        <div class="widget-content">
+                            <div class="data-sources-table">
+                                <table class="sources-table">
+                                    <thead>
+                                        <tr>
+                                            <th>数据源名称</th>
+                                            <th>类型</th>
+                                            <th>状态</th>
+                                            <th>延迟</th>
+                                            <th>数据量</th>
+                                            <th>最后更新</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="source-info">
+                                                    <div class="source-name">Binance Spot API</div>
+                                                    <div class="source-desc">现货交易数据</div>
+                                                </div>
+                                            </td>
+                                            <td><span class="type-tag api">API</span></td>
+                                            <td>
+                                                <div class="status-item">
+                                                    <span class="status-indicator online"></span>
+                                                    <span>正常</span>
+                                                </div>
+                                            </td>
+                                            <td>120ms</td>
+                                            <td>1.2M/day</td>
+                                            <td>2分钟前</td>
+                                            <td>
+                                                <div class="table-actions">
+                                                    <button class="btn btn-secondary small">配置</button>
+                                                    <button class="btn btn-secondary small">测试</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="source-info">
+                                                    <div class="source-name">OKX Market Data</div>
+                                                    <div class="source-desc">期货和现货数据</div>
+                                                </div>
+                                            </td>
+                                            <td><span class="type-tag websocket">WebSocket</span></td>
+                                            <td>
+                                                <div class="status-item">
+                                                    <span class="status-indicator online"></span>
+                                                    <span>正常</span>
+                                                </div>
+                                            </td>
+                                            <td>95ms</td>
+                                            <td>850K/day</td>
+                                            <td>1分钟前</td>
+                                            <td>
+                                                <div class="table-actions">
+                                                    <button class="btn btn-secondary small">配置</button>
+                                                    <button class="btn btn-secondary small">测试</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="source-info">
+                                                    <div class="source-name">Coinglass情绪数据</div>
+                                                    <div class="source-desc">市场情绪指标</div>
+                                                </div>
+                                            </td>
+                                            <td><span class="type-tag api">API</span></td>
+                                            <td>
+                                                <div class="status-item">
+                                                    <span class="status-indicator warning"></span>
+                                                    <span>延迟</span>
+                                                </div>
+                                            </td>
+                                            <td>1.2s</td>
+                                            <td>50K/day</td>
+                                            <td>5分钟前</td>
+                                            <td>
+                                                <div class="table-actions">
+                                                    <button class="btn btn-secondary small">配置</button>
+                                                    <button class="btn btn-secondary small">测试</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 数据源统计 -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3><i data-lucide="bar-chart"></i>数据源统计</h3>
+                        </div>
+                        <div class="widget-content">
+                            <div class="source-stats-chart">
+                                <canvas id="data-source-stats-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分析报告页面 -->
+            <div class="page" id="analysis-reports-page">
+                <div class="page-header">
+                    <h2>分析报告</h2>
+                    <div class="page-actions">
+                        <button class="btn btn-primary">
+                            <i data-lucide="plus"></i>
+                            生成报告
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reports-container">
+                    <!-- 报告列表 -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3><i data-lucide="file-text"></i>报告列表</h3>
+                            <div class="widget-actions">
+                                <select class="form-select small">
+                                    <option>全部报告</option>
+                                    <option>因子分析报告</option>
+                                    <option>回测报告</option>
+                                    <option>数据质量报告</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="widget-content">
+                            <div class="reports-grid">
+                                <div class="report-card">
+                                    <div class="report-header">
+                                        <div class="report-title">技术指标因子分析报告</div>
+                                        <div class="report-type">因子分析</div>
+                                    </div>
+                                    <div class="report-meta">
+                                        <div class="report-date">2024-01-27 15:30</div>
+                                        <div class="report-status completed">已完成</div>
+                                    </div>
+                                    <div class="report-summary">
+                                        分析了156个技术指标因子的有效性，发现12个高质量因子...
+                                    </div>
+                                    <div class="report-actions">
+                                        <button class="btn btn-secondary small">
+                                            <i data-lucide="eye"></i>
+                                            查看
+                                        </button>
+                                        <button class="btn btn-secondary small">
+                                            <i data-lucide="download"></i>
+                                            下载
+                                        </button>
+                                        <button class="btn btn-secondary small">
+                                            <i data-lucide="share"></i>
+                                            分享
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="report-card">
+                                    <div class="report-header">
+                                        <div class="report-title">多因子组合回测报告</div>
+                                        <div class="report-type">回测分析</div>
+                                    </div>
+                                    <div class="report-meta">
+                                        <div class="report-date">2024-01-26 14:20</div>
+                                        <div class="report-status completed">已完成</div>
+                                    </div>
+                                    <div class="report-summary">
+                                        5因子组合策略回测结果，年化收益45.2%，夏普比率1.85...
+                                    </div>
+                                    <div class="report-actions">
+                                        <button class="btn btn-secondary small">
+                                            <i data-lucide="eye"></i>
+                                            查看
+                                        </button>
+                                        <button class="btn btn-secondary small">
+                                            <i data-lucide="download"></i>
+                                            下载
+                                        </button>
+                                        <button class="btn btn-secondary small">
+                                            <i data-lucide="share"></i>
+                                            分享
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="report-card">
+                                    <div class="report-header">
+                                        <div class="report-title">数据质量监控报告</div>
+                                        <div class="report-type">数据质量</div>
+                                    </div>
+                                    <div class="report-meta">
+                                        <div class="report-date">2024-01-25 09:15</div>
+                                        <div class="report-status completed">已完成</div>
+                                    </div>
+                                    <div class="report-summary">
+                                        过去7天数据质量分析，完整性98.5%，准确性99.2%...
+                                    </div>
+                                    <div class="report-actions">
+                                        <button class="btn btn-secondary small">
+                                            <i data-lucide="eye"></i>
+                                            查看
+                                        </button>
+                                        <button class="btn btn-secondary small">
+                                            <i data-lucide="download"></i>
+                                            下载
+                                        </button>
+                                        <button class="btn btn-secondary small">
+                                            <i data-lucide="share"></i>
+                                            分享
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 系统配置页面 -->
+            <div class="page" id="system-config-page">
+                <div class="page-header">
+                    <h2>系统配置</h2>
+                </div>
+
+                <div class="config-container">
+                    <!-- 配置侧边栏 -->
+                    <div class="config-sidebar">
+                        <div class="config-menu">
+                            <div class="menu-item active" data-config="data-sources">
+                                <i data-lucide="database"></i>
+                                <span>数据源配置</span>
+                            </div>
+                            <div class="menu-item" data-config="ai-settings">
+                                <i data-lucide="brain"></i>
+                                <span>AI引擎设置</span>
+                            </div>
+                            <div class="menu-item" data-config="compute-settings">
+                                <i data-lucide="cpu"></i>
+                                <span>计算资源</span>
+                            </div>
+                            <div class="menu-item" data-config="notifications">
+                                <i data-lucide="bell"></i>
+                                <span>通知设置</span>
+                            </div>
+                            <div class="menu-item" data-config="backup">
+                                <i data-lucide="hard-drive"></i>
+                                <span>备份与恢复</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 配置内容 -->
+                    <div class="config-content">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <h3><i data-lucide="database"></i>数据源配置</h3>
+                                <button class="btn btn-primary small">
+                                    <i data-lucide="save"></i>
+                                    保存配置
+                                </button>
+                            </div>
+                            <div class="widget-content">
+                                <div class="config-form">
+                                    <div class="form-section">
+                                        <h4>API密钥管理</h4>
+                                        <div class="api-keys-list">
+                                            <div class="api-key-item">
+                                                <div class="api-key-info">
+                                                    <div class="api-key-name">Binance API</div>
+                                                    <div class="api-key-status">
+                                                        <span class="status-indicator online"></span>
+                                                        <span>已配置</span>
+                                                    </div>
+                                                </div>
+                                                <div class="api-key-actions">
+                                                    <button class="btn btn-secondary small">编辑</button>
+                                                    <button class="btn btn-secondary small">测试</button>
+                                                </div>
+                                            </div>
+                                            <div class="api-key-item">
+                                                <div class="api-key-info">
+                                                    <div class="api-key-name">OKX API</div>
+                                                    <div class="api-key-status">
+                                                        <span class="status-indicator online"></span>
+                                                        <span>已配置</span>
+                                                    </div>
+                                                </div>
+                                                <div class="api-key-actions">
+                                                    <button class="btn btn-secondary small">编辑</button>
+                                                    <button class="btn btn-secondary small">测试</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary">
+                                            <i data-lucide="plus"></i>
+                                            添加API密钥
+                                        </button>
+                                    </div>
+
+                                    <div class="form-section">
+                                        <h4>数据刷新设置</h4>
+                                        <div class="form-group">
+                                            <label>数据刷新频率</label>
+                                            <select class="form-select">
+                                                <option>实时 (< 1s)</option>
+                                                <option selected>快速 (1-5s)</option>
+                                                <option>正常 (5-30s)</option>
+                                                <option>节能 (30s+)</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>历史数据保留期</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-input" value="365">
+                                                <span class="input-suffix">天</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Toast通知容器 -->
+        <div class="toast-container" id="toast-container"></div>
+
+        <!-- 加载遮罩 -->
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="loading-spinner"></div>
+            <p>数据分析系统初始化中...</p>
+        </div>
+    </div>
+
+    <!-- 工具函数库 -->
+    <script src="utils.js"></script>
+    
+    <!-- 数据分析专用应用 -->
+    <script src="data-analysis-app.js"></script>
+    
+    <!-- 开发模式热重载脚本 -->
+    <script>
+        (function() {
+            const testWs = new WebSocket('ws://localhost:8000/dev-ws');
+            
+            testWs.onopen = function() {
+                const devScript = document.createElement('script');
+                devScript.src = '/dev_client.js';
+                devScript.onload = function() {
+                    console.log('🔧 开发模式热重载脚本已加载');
+                };
+                devScript.onerror = function() {
+                    console.warn('⚠️ 开发模式脚本加载失败');
+                };
+                document.head.appendChild(devScript);
+                testWs.close();
+            };
+            
+            testWs.onerror = function() {
+                console.log('ℹ️ 生产模式运行');
+            };
+            
+            setTimeout(function() {
+                if (testWs.readyState === WebSocket.CONNECTING) {
+                    testWs.close();
+                }
+            }, 1000);
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,609 @@
+/* ================================= 
+   响应式设计样式
+   适配移动设备和平板设备
+   ================================= */
+
+/* 平板设备 (768px - 1024px) */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-4);
+    }
+
+    .navbar-center {
+        display: none;
+    }
+
+    .navbar-right .current-time {
+        display: none;
+    }
+
+    .widget {
+        margin-bottom: var(--spacing-4);
+    }
+
+    .strategy-container {
+        flex-direction: column;
+    }
+
+    .strategy-sidebar {
+        width: 100%;
+        margin-bottom: var(--spacing-4);
+    }
+
+    .factor-lab-container {
+        flex-direction: column;
+    }
+
+    .factor-controls {
+        width: 100%;
+        margin-bottom: var(--spacing-4);
+    }
+
+    .trades-container .trades-header {
+        margin-bottom: var(--spacing-4);
+    }
+
+    .risk-container {
+        flex-direction: column;
+    }
+
+    .risk-details {
+        flex-direction: column;
+    }
+
+    .settings-container {
+        flex-direction: column;
+    }
+
+    .settings-sidebar {
+        width: 100%;
+        margin-bottom: var(--spacing-4);
+    }
+}
+
+/* 移动设备 (最大768px) */
+@media (max-width: 768px) {
+    /* 导航栏适配 */
+    .navbar {
+        padding: 0 var(--spacing-2);
+        height: 56px;
+    }
+
+    .logo h1 {
+        font-size: var(--font-size-lg);
+    }
+
+    .version {
+        display: none;
+    }
+
+    .navbar-right {
+        gap: var(--spacing-2);
+    }
+
+    .profile-btn {
+        padding: var(--spacing-1);
+    }
+
+    /* 主内容区域 */
+    .main-content {
+        padding: var(--spacing-2);
+    }
+
+    /* 卡片组件 */
+    .widget {
+        border-radius: var(--radius-lg);
+        margin-bottom: var(--spacing-3);
+    }
+
+    .widget-header {
+        padding: var(--spacing-3);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-2);
+    }
+
+    .widget-content {
+        padding: var(--spacing-3);
+    }
+
+    /* 表格适配 */
+    .market-table-container,
+    .trades-table-container,
+    .strategy-table-container,
+    .factor-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .market-table,
+    .trades-table,
+    .strategy-table,
+    .factor-table {
+        min-width: 600px;
+        font-size: var(--font-size-sm);
+    }
+
+    .market-table th,
+    .market-table td,
+    .trades-table th,
+    .trades-table td,
+    .strategy-table th,
+    .strategy-table td,
+    .factor-table th,
+    .factor-table td {
+        padding: var(--spacing-2) var(--spacing-1);
+    }
+
+    /* 统计卡片 */
+    .trading-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-2);
+    }
+
+    .stat-card {
+        padding: var(--spacing-3);
+    }
+
+    .stat-content .stat-value {
+        font-size: var(--font-size-lg);
+    }
+
+    /* AI分析卡片 */
+    .ai-metrics {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-2);
+    }
+
+    .ai-metric {
+        padding: var(--spacing-3);
+    }
+
+    /* 策略状态 */
+    .strategy-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .strategy-cards {
+        gap: var(--spacing-2);
+    }
+
+    /* 投资组合 */
+    .portfolio-breakdown {
+        gap: var(--spacing-2);
+    }
+
+    .breakdown-item {
+        padding: var(--spacing-2);
+        font-size: var(--font-size-sm);
+    }
+
+    /* 系统监控 */
+    .system-metrics {
+        gap: var(--spacing-2);
+    }
+
+    .connection-status-list {
+        gap: var(--spacing-2);
+    }
+
+    .connection-item {
+        padding: var(--spacing-2);
+        font-size: var(--font-size-sm);
+    }
+
+    /* AI因子发现 */
+    .factor-controls .widget-content {
+        padding: var(--spacing-3);
+    }
+
+    .form-group {
+        margin-bottom: var(--spacing-3);
+    }
+
+    .form-input,
+    .form-select {
+        font-size: var(--font-size-base);
+    }
+
+    .btn {
+        padding: var(--spacing-2) var(--spacing-3);
+        font-size: var(--font-size-sm);
+    }
+
+    .btn.full-width {
+        width: 100%;
+        margin-top: var(--spacing-2);
+    }
+
+    /* 进度步骤 */
+    .progress-info {
+        gap: var(--spacing-2);
+    }
+
+    .progress-step {
+        padding: var(--spacing-2);
+        font-size: var(--font-size-sm);
+    }
+
+    /* AI分析总览 */
+    .ai-summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-2);
+    }
+
+    .ai-summary-card {
+        padding: var(--spacing-3);
+    }
+
+    .card-content h4 {
+        font-size: var(--font-size-base);
+    }
+
+    /* 情绪分析 */
+    .sentiment-gauge {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .gauge-container {
+        margin-bottom: var(--spacing-3);
+    }
+
+    .sentiment-details {
+        gap: var(--spacing-2);
+    }
+
+    /* 预测分析 */
+    .prediction-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-2);
+    }
+
+    /* 策略建议 */
+    .recommendation-item {
+        padding: var(--spacing-3);
+    }
+
+    .recommendation-actions {
+        flex-direction: column;
+        gap: var(--spacing-2);
+    }
+
+    .recommendation-actions .btn {
+        width: 100%;
+    }
+
+    /* 交易记录 */
+    .trades-chart .chart-container {
+        height: 250px;
+    }
+
+    .pagination {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-2);
+    }
+
+    /* 风险监控 */
+    .risk-dashboard {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .risk-gauge-container {
+        margin-bottom: var(--spacing-4);
+    }
+
+    .risk-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .risk-metric {
+        padding: var(--spacing-3);
+    }
+
+    .alerts-list {
+        gap: var(--spacing-2);
+    }
+
+    .alert-item {
+        padding: var(--spacing-3);
+    }
+
+    .alert-actions {
+        flex-direction: column;
+        gap: var(--spacing-1);
+    }
+
+    .alert-actions .btn {
+        width: 100%;
+        font-size: var(--font-size-sm);
+    }
+
+    /* 风控设置 */
+    .risk-settings-form {
+        gap: var(--spacing-3);
+    }
+
+    .form-section h4 {
+        font-size: var(--font-size-lg);
+        margin-bottom: var(--spacing-2);
+    }
+
+    /* 设置页面 */
+    .settings-menu {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: var(--spacing-1);
+        padding: var(--spacing-2);
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: var(--spacing-3);
+    }
+
+    .menu-item {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        font-size: var(--font-size-sm);
+    }
+
+    .settings-content {
+        padding: 0;
+    }
+
+    /* API配置 */
+    .api-config-tabs .tab-switcher {
+        flex-wrap: wrap;
+        gap: var(--spacing-1);
+    }
+
+    .tab-btn {
+        flex: 1;
+        min-width: 80px;
+        font-size: var(--font-size-sm);
+    }
+
+    .api-form {
+        gap: var(--spacing-3);
+    }
+
+    .input-group {
+        flex-direction: column;
+        gap: var(--spacing-1);
+    }
+
+    .input-group .btn {
+        width: 100%;
+    }
+
+    /* AI状态网格 */
+    .ai-status-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-2);
+    }
+
+    /* 系统参数 */
+    .params-form {
+        gap: var(--spacing-3);
+    }
+
+    .slider-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* 通知设置 */
+    .notification-group {
+        margin-bottom: var(--spacing-3);
+    }
+
+    .notification-item {
+        padding: var(--spacing-2) 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    /* 备份列表 */
+    .backup-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-2);
+    }
+
+    .backup-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* Toast通知 */
+    .toast-container {
+        left: var(--spacing-2);
+        right: var(--spacing-2);
+        width: auto;
+    }
+
+    .toast {
+        margin-bottom: var(--spacing-2);
+    }
+
+    /* 加载遮罩 */
+    .loading-overlay {
+        padding: var(--spacing-4);
+    }
+
+    .loading-overlay p {
+        font-size: var(--font-size-base);
+        margin-top: var(--spacing-3);
+    }
+}
+
+/* 小屏移动设备 (最大480px) */
+@media (max-width: 480px) {
+    /* 更紧凑的导航 */
+    .logo h1 {
+        font-size: var(--font-size-base);
+    }
+
+    .logo-icon {
+        font-size: var(--font-size-lg);
+    }
+
+    /* 更小的按钮 */
+    .btn {
+        padding: var(--spacing-1-5) var(--spacing-2-5);
+        font-size: var(--font-size-sm);
+    }
+
+    .btn.small {
+        padding: var(--spacing-1) var(--spacing-2);
+        font-size: var(--font-size-xs);
+    }
+
+    /* 统计卡片单列布局 */
+    .trading-stats-grid,
+    .ai-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* 表格字体更小 */
+    .market-table,
+    .trades-table,
+    .strategy-table,
+    .factor-table {
+        font-size: var(--font-size-xs);
+    }
+
+    /* AI指标单列 */
+    .ai-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    /* 策略统计单列 */
+    .strategy-stats {
+        grid-template-columns: 1fr;
+    }
+
+    /* 风险指标单列 */
+    .risk-metrics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* 表单间距调整 */
+    .form-group {
+        margin-bottom: var(--spacing-2);
+    }
+
+    .widget-header h3 {
+        font-size: var(--font-size-lg);
+    }
+
+    .stat-value {
+        font-size: var(--font-size-xl);
+    }
+
+    /* Tab按钮更小 */
+    .tab-btn {
+        padding: var(--spacing-1-5) var(--spacing-2);
+        font-size: var(--font-size-xs);
+    }
+
+    /* 紧凑的警报项 */
+    .alert-item {
+        padding: var(--spacing-2);
+    }
+
+    .alert-title {
+        font-size: var(--font-size-sm);
+    }
+
+    .alert-description {
+        font-size: var(--font-size-xs);
+    }
+}
+
+/* 横屏适配 */
+@media (max-height: 500px) and (orientation: landscape) {
+    .navbar {
+        height: 48px;
+    }
+
+    .main-content {
+        padding: var(--spacing-1);
+    }
+
+    .widget {
+        margin-bottom: var(--spacing-2);
+    }
+
+    .widget-header {
+        padding: var(--spacing-2);
+    }
+
+    .widget-content {
+        padding: var(--spacing-2);
+    }
+
+    .chart-container {
+        height: 200px;
+    }
+}
+
+/* 深色模式媒体查询适配 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* 自动适配系统深色模式 */
+        --bg-primary: #0a0e1a;
+        --bg-secondary: #1a1d29;
+        --text-primary: #ffffff;
+    }
+}
+
+/* 高对比度适配 */
+@media (prefers-contrast: high) {
+    :root {
+        --border-color: #ffffff;
+        --text-muted: #e2e8f0;
+    }
+
+    .btn {
+        border: 1px solid currentColor;
+    }
+}
+
+/* 减少动画适配 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 打印样式 */
+@media print {
+    .navbar,
+    .loading-overlay,
+    .toast-container {
+        display: none !important;
+    }
+
+    .main-content {
+        padding: 0;
+    }
+
+    .widget {
+        page-break-inside: avoid;
+        border: 1px solid #000;
+        margin-bottom: 20px;
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+    }
+}

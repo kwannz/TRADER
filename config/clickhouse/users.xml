@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<clickhouse>
+    <users>
+        <default>
+            <password>quant_password</password>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+            <access_management>1</access_management>
+        </default>
+    </users>
+    
+    <profiles>
+        <default>
+            <max_memory_usage>10000000000</max_memory_usage>
+            <load_balancing>random</load_balancing>
+            <distributed_product_mode>global</distributed_product_mode>
+        </default>
+    </profiles>
+    
+    <quotas>
+        <default>
+            <interval>
+                <duration>3600</duration>
+                <queries>1000</queries>
+                <errors>10</errors>
+                <result_rows>10000000</result_rows>
+                <read_rows>100000000</read_rows>
+                <execution_time>3600</execution_time>
+            </interval>
+        </default>
+    </quotas>
+</clickhouse>

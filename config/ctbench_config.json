@@ -1,0 +1,77 @@
+{
+  "ctbench_models": {
+    "timevae": {
+      "model_name": "TimeVAE",
+      "input_dim": 6,
+      "output_dim": 6,
+      "sequence_length": 60,
+      "hidden_dim": 128,
+      "latent_dim": 32,
+      "num_layers": 2,
+      "dropout": 0.1,
+      "learning_rate": 0.001,
+      "batch_size": 64,
+      "epochs": 100,
+      "beta": 1.0,
+      "reconstruction_loss": "mse"
+    },
+    "quantgan": {
+      "model_name": "QuantGAN",
+      "input_dim": 6,
+      "output_dim": 6,
+      "sequence_length": 60,
+      "hidden_dim": 128,
+      "latent_dim": 100,
+      "num_layers": 2,
+      "dropout": 0.1,
+      "learning_rate": 0.0002,
+      "batch_size": 64,
+      "epochs": 200,
+      "generator_hidden_dims": [128, 256, 512],
+      "discriminator_hidden_dims": [512, 256, 128],
+      "d_learning_rate": 0.0002,
+      "g_learning_rate": 0.0002,
+      "beta1": 0.5,
+      "beta2": 0.999,
+      "n_critic": 5,
+      "gp_lambda": 10.0,
+      "use_spectral_norm": true
+    }
+  },
+  "risk_management": {
+    "var_confidence_level": 0.05,
+    "stress_test_scenarios": 1000,
+    "max_position_weight": 0.1,
+    "correlation_threshold": 0.8,
+    "liquidity_threshold": 0.05,
+    "black_swan_threshold": 0.01,
+    "rebalance_threshold": 0.05
+  },
+  "service_settings": {
+    "max_queue_size": 1000,
+    "worker_threads": 4,
+    "request_timeout": 30,
+    "websocket_ping_interval": 10,
+    "websocket_ping_timeout": 5
+  },
+  "data_settings": {
+    "default_sequence_length": 60,
+    "max_samples_per_request": 10000,
+    "data_cache_size": 100,
+    "cache_ttl_seconds": 3600
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    "file": "logs/ctbench.log",
+    "max_size": "10MB",
+    "backup_count": 5
+  },
+  "performance": {
+    "enable_gpu": true,
+    "gpu_memory_fraction": 0.8,
+    "mixed_precision": false,
+    "batch_processing": true,
+    "async_generation": true
+  }
+}

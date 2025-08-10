@@ -1,0 +1,52 @@
+{
+  "database": {
+    "mongodb": {
+      "host": "localhost",
+      "port": 27017,
+      "database": "trading_system",
+      "username": "",
+      "password": ""
+    },
+    "redis": {
+      "host": "localhost",
+      "port": 6379,
+      "database": 0,
+      "password": ""
+    }
+  },
+  "api": {
+    "host": "0.0.0.0",
+    "port": 8000,
+    "debug": true,
+    "cors_origins": ["http://localhost:3000", "http://127.0.0.1:3000"],
+    "allowed_hosts": ["localhost", "127.0.0.1"]
+  },
+  "ai": {
+    "deepseek": {
+      "api_key": "your_deepseek_api_key_here",
+      "base_url": "https://api.deepseek.com/v1"
+    },
+    "gemini": {
+      "api_key": "your_gemini_api_key_here"
+    }
+  },
+  "trading": {
+    "okx": {
+      "api_key": "",
+      "secret_key": "",
+      "passphrase": "",
+      "sandbox": true
+    },
+    "binance": {
+      "api_key": "",
+      "secret_key": "",
+      "sandbox": true
+    }
+  },
+  "system": {
+    "log_level": "INFO",
+    "max_position_size": 0.8,
+    "hard_stop_loss": 300.0,
+    "refresh_rate_hz": 4
+  }
+}

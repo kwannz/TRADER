@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前端功能测试</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
+</head>
+<body>
+    <div id="test-results"></div>
+    <script>
+        console.log("🧪 开始前端功能测试...");
+        
+        // 测试API连接
+        async function testAPIConnection() {
+            console.log("📡 测试API连接...");
+            try {
+                const response = await fetch('http://localhost:8003/api/v1/health');
+                const data = await response.json();
+                console.log("✅ API健康检查通过:", data);
+                return true;
+            } catch (error) {
+                console.error("❌ API连接失败:", error);
+                return false;
+            }
+        }
+        
+        // 测试数据获取
+        async function testDataFetch() {
+            console.log("📊 测试数据获取...");
+            try {
+                const response = await fetch('http://localhost:8003/api/v1/data/overview');
+                const data = await response.json();
+                console.log("✅ 数据概览获取成功:", {
+                    success: data.success,
+                    symbols: data.data?.statistics?.total_symbols,
+                    datapoints: data.data?.statistics?.total_datapoints,
+                    factors: data.data?.statistics?.active_factors
+                });
+                return data;
+            } catch (error) {
+                console.error("❌ 数据获取失败:", error);
+                return null;
+            }
+        }
+        
+        // 测试AI因子生成
+        async function testAIGeneration() {
+            console.log("🤖 测试AI因子生成...");
+            try {
+                const response = await fetch('http://localhost:8003/api/v1/factors/generate');
+                const data = await response.json();
+                console.log("✅ AI因子生成成功:", {
+                    success: data.success,
+                    factorName: data.data?.factor?.name,
+                    aiScore: data.data?.factor?.ai_score,
+                    cost: data.data?.generation_cost
+                });
+                return data;
+            } catch (error) {
+                console.error("❌ AI因子生成失败:", error);
+                return null;
+            }
+        }
+        
+        // 测试因子库
+        async function testFactorLibrary() {
+            console.log("📚 测试因子库...");
+            try {
+                const response = await fetch('http://localhost:8003/api/v1/factors/library');
+                const data = await response.json();
+                console.log("✅ 因子库获取成功:", {
+                    success: data.success,
+                    factorCount: data.data?.total_count,
+                    categories: Object.keys(data.data?.categories || {}).length
+                });
+                return data;
+            } catch (error) {
+                console.error("❌ 因子库获取失败:", error);
+                return null;
+            }
+        }
+        
+        // 测试Chart.js
+        function testChartJS() {
+            console.log("📈 测试Chart.js...");
+            try {
+                if (typeof Chart !== 'undefined') {
+                    console.log("✅ Chart.js加载成功, 版本:", Chart.version);
+                    return true;
+                } else {
+                    console.error("❌ Chart.js未加载");
+                    return false;
+                }
+            } catch (error) {
+                console.error("❌ Chart.js测试失败:", error);
+                return false;
+            }
+        }
+        
+        // 测试ECharts
+        function testECharts() {
+            console.log("📊 测试ECharts...");
+            try {
+                if (typeof echarts !== 'undefined') {
+                    console.log("✅ ECharts加载成功, 版本:", echarts.version);
+                    return true;
+                } else {
+                    console.error("❌ ECharts未加载");
+                    return false;
+                }
+            } catch (error) {
+                console.error("❌ ECharts测试失败:", error);
+                return false;
+            }
+        }
+        
+        // 运行所有测试
+        async function runAllTests() {
+            console.log("🚀 开始执行完整功能测试...");
+            
+            const results = {
+                timestamp: new Date().toISOString(),
+                tests: {}
+            };
+            
+            // 测试图表库
+            results.tests.chartJS = testChartJS();
+            results.tests.echarts = testECharts();
+            
+            // 测试API连接
+            results.tests.apiConnection = await testAPIConnection();
+            
+            // 测试数据获取
+            results.tests.dataFetch = await testDataFetch();
+            
+            // 测试AI生成
+            results.tests.aiGeneration = await testAIGeneration();
+            
+            // 测试因子库
+            results.tests.factorLibrary = await testFactorLibrary();
+            
+            // 总结结果
+            const passedTests = Object.values(results.tests).filter(Boolean).length;
+            const totalTests = Object.keys(results.tests).length;
+            
+            console.log("📋 测试总结:", {
+                通过: passedTests,
+                总计: totalTests,
+                成功率: `${(passedTests/totalTests*100).toFixed(1)}%`,
+                详细结果: results.tests
+            });
+            
+            // 显示结果到页面
+            document.getElementById('test-results').innerHTML = `
+                <h2>前端功能测试结果</h2>
+                <p>测试时间: ${results.timestamp}</p>
+                <p>通过: ${passedTests}/${totalTests} (${(passedTests/totalTests*100).toFixed(1)}%)</p>
+                <pre>${JSON.stringify(results, null, 2)}</pre>
+            `;
+            
+            return results;
+        }
+        
+        // 页面加载后运行测试
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 1000);
+        });
+        
+        console.log("🏁 测试脚本已加载，等待页面完成加载...");
+    </script>
+</body>
+</html>

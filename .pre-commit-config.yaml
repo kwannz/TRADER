@@ -1,0 +1,61 @@
+repos:
+  # Python代码格式化和检查
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: mixed-line-ending
+
+  # Python代码格式化
+  - repo: https://github.com/psf/black
+    rev: 23.1.0
+    hooks:
+      - id: black
+        language_version: python3
+        files: backend/.*\.py$
+
+  # Python import排序
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+        files: backend/.*\.py$
+
+  # Python语法检查
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        files: backend/.*\.py$
+        args: [--max-line-length=88, --extend-ignore=E203]
+
+  # Rust代码格式化
+  - repo: local
+    hooks:
+      - id: rust-fmt
+        name: rust fmt
+        entry: cargo fmt
+        language: system
+        files: rust-engine/.*\.rs$
+        pass_filenames: false
+
+      - id: rust-clippy
+        name: rust clippy
+        entry: cargo clippy
+        language: system
+        files: rust-engine/.*\.rs$
+        pass_filenames: false
+        args: [--all-targets, --all-features, --, -D, warnings]
+
+  # 提交信息格式检查
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v2.42.1
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
